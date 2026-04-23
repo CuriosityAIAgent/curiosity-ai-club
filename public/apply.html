@@ -128,7 +128,7 @@
 
         .form-section {
             padding: 3.5rem 0;
-            border-bottom: 1px solid var(--line-paper);
+            border-bottom: 2px solid var(--line-paper);
         }
         .form-section:last-of-type { border-bottom: none; }
 
@@ -142,16 +142,16 @@
         .section-cmd .mute { color: var(--fog); }
 
         .section-title {
-            font-weight: 500;
-            font-size: 1.8rem;
+            font-weight: 600;
+            font-size: 2rem;
             line-height: 1.05;
             letter-spacing: -0.025em;
             color: var(--ink);
-            margin-bottom: 0.4rem;
+            margin-bottom: 0.5rem;
         }
 
         .section-desc {
-            font-size: 0.95rem;
+            font-size: 1rem;
             color: var(--fog);
             margin-bottom: 2.5rem;
             line-height: 1.55;
@@ -162,14 +162,19 @@
 
         .field-label {
             display: block;
-            font-family: var(--mono);
-            font-size: 0.7rem;
-            letter-spacing: 0.06em;
-            color: var(--fog);
-            margin-bottom: 0.5rem;
-            font-weight: 500;
+            font-family: var(--sans);
+            font-size: 0.92rem;
+            letter-spacing: 0.01em;
+            color: var(--ink);
+            margin-bottom: 0.6rem;
+            font-weight: 600;
         }
-        .field-label .opt { color: var(--fog-2); }
+        .field-label .opt {
+            color: var(--fog-2);
+            font-weight: 400;
+            font-family: var(--mono);
+            font-size: 0.72rem;
+        }
 
         .field-input {
             width: 100%;
@@ -215,8 +220,8 @@
         .field-hint::before { content: '// '; color: var(--accent); }
 
         .field-sublabel {
-            font-size: 0.88rem;
-            color: var(--fog-2);
+            font-size: 0.9rem;
+            color: var(--fog);
             margin-bottom: 0.8rem;
             line-height: 1.4;
         }

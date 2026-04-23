@@ -451,7 +451,8 @@
             line-height: 1.7;
         }
         .body-prose p { margin-bottom: 1.6rem; color: var(--fog); }
-        .body-prose p.strong-text { color: var(--ink); font-weight: 400; }
+        .body-prose p.strong-text { color: var(--ink); font-weight: 400; font-size: 1.2rem; }
+        .body-prose strong { font-weight: 600; color: var(--ink); }
         .body-prose p.emph { color: var(--ink); font-weight: 500; font-size: 1.5rem; line-height: 1.4; }
         .body-prose p.emph .accent { color: var(--accent); }
 
@@ -531,9 +532,17 @@
         }
         .track p {
             font-weight: 400;
-            font-size: 1rem;
+            font-size: 1.05rem;
             line-height: 1.65;
             color: var(--fog);
+        }
+        .track p strong {
+            color: var(--ink);
+            font-weight: 600;
+        }
+        .track p em {
+            color: var(--ink);
+            font-style: italic;
         }
 
         /* ─── TRAITS ─── */
@@ -560,10 +569,10 @@
         }
         .traits li {
             font-family: var(--mono);
-            font-size: 0.9rem;
-            font-weight: 400;
+            font-size: 0.92rem;
+            font-weight: 500;
             color: var(--ink);
-            padding: 0.9rem 0;
+            padding: 1rem 0;
             display: flex;
             align-items: baseline;
             gap: 0.8rem;
@@ -899,9 +908,9 @@
             <div class="body-prose inner-narrow fade-up">
                 <p>There are plenty of conferences. No shortage of webinars. LinkedIn is full of people who &ldquo;leverage AI.&rdquo;</p>
                 <p class="emph">This isn&rsquo;t <span class="accent">that</span>.</p>
-                <p class="strong-text">This is a room. A small one. Ten people who have gone well beyond asking questions and started building answers. People who have shipped something &mdash; a prototype, a tool, an agent, a product &mdash; and want to be around others doing the same.</p>
-                <p>We connect outside of work hours because this matters enough to give up an evening for it. Monthly sessions to share what we&rsquo;re building. A group chat that&rsquo;s always on for the problems that can&rsquo;t wait. Quarterly deep-dives with someone from outside who&rsquo;s pushing the edge.</p>
-                <p class="strong-text">No panels. No presentations. No name badges. Just ten people, a table, and the thing they built last weekend.</p>
+                <p class="strong-text">This is a room. A small one. Ten people who have gone <strong>well beyond asking questions</strong> and started building answers. People who have shipped something &mdash; a prototype, a tool, an agent, a product &mdash; and want to be around others doing the same.</p>
+                <p>We connect <strong>outside of work hours</strong> because this matters enough to give up an evening for it. Monthly sessions to share what we&rsquo;re building. A group chat that&rsquo;s always on for the problems that can&rsquo;t wait. Quarterly deep-dives with someone from outside who&rsquo;s pushing the edge.</p>
+                <p class="strong-text"><strong>No panels. No presentations. No name badges.</strong> Just ten people, a table, and the thing they built last weekend.</p>
             </div>
         </div>
     </section>
@@ -939,12 +948,12 @@
                 <div class="track">
                     <div class="track-cmd"><span class="prompt">$</span> <span class="path">tracks/business-builder</span></div>
                     <h3>The Business Builder</h3>
-                    <p>You&rsquo;ve pushed past the boundary. You didn&rsquo;t wait for IT to build it &mdash; you built it yourself. You&rsquo;ve stood up a prototype, wired up a database, put something live. You know the difference between an idea and a working demo. You&rsquo;ve crossed the line from &ldquo;wouldn&rsquo;t it be great if&rdquo; to &ldquo;here, let me show you.&rdquo;</p>
+                    <p>You&rsquo;ve pushed past the boundary. You didn&rsquo;t wait for IT to build it &mdash; <strong>you built it yourself</strong>. You&rsquo;ve stood up a prototype, wired up a database, put something live. You know the difference between an idea and a working demo. You&rsquo;ve crossed the line from &ldquo;wouldn&rsquo;t it be great if&rdquo; to &ldquo;here, let me show you.&rdquo;</p>
                 </div>
                 <div class="track">
                     <div class="track-cmd"><span class="prompt">$</span> <span class="path">tracks/technical-builder</span></div>
                     <h3>The Technical Builder</h3>
-                    <p>The bar is higher. We expect you to be building with AI &mdash; that&rsquo;s a given. What sets you apart is whether you understand <em>why</em> you&rsquo;re building it. Can you name the business problem? Can you explain the commercial logic? Have you built something beautiful &mdash; not just functional, but considered?</p>
+                    <p>You live closer to the code &mdash; product, engineering, data. Building with AI is what you do. The question is whether you see past the technology. Can you name the business problem your system solves? Can you explain the commercial logic? Have you built something <strong>beautiful</strong> &mdash; not just functional, but thoughtful in how it works and why it exists? We want engineers and product builders who think like founders.</p>
                 </div>
             </div>
 
