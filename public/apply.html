@@ -181,6 +181,38 @@
             font-family: var(--mono);
             font-size: 0.72rem;
         }
+        .field-label .req {
+            color: #B44;
+            font-weight: 500;
+            margin-left: 0.2rem;
+        }
+        .field.has-error .field-input,
+        .field.has-error .field-textarea {
+            border-color: #B44;
+        }
+        .field.has-error .field-label {
+            color: #B44;
+        }
+        .field-error {
+            font-family: var(--mono);
+            font-size: 0.72rem;
+            color: #B44;
+            margin-top: 0.4rem;
+            display: none;
+        }
+        .field.has-error .field-error { display: block; }
+        .validation-banner {
+            background: rgba(180,68,68,0.08);
+            border: 1px solid rgba(180,68,68,0.25);
+            border-left: 4px solid #B44;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.92rem;
+            color: #B44;
+            font-weight: 500;
+            display: none;
+        }
+        .validation-banner.show { display: block; }
 
         .field-input {
             width: 100%;
@@ -445,6 +477,8 @@
 
     <div class="form-wrapper" id="applicationForm">
 
+        <div class="validation-banner" id="validationBanner">Please fill in the required fields before submitting.</div>
+
         <!-- SECTION 1: WHO YOU ARE -->
         <div class="form-section">
             <div class="section-cmd"><span class="mute">$</span> who_are_you</div>
@@ -452,18 +486,21 @@
             <p class="section-desc">The basics. Nothing complicated.</p>
 
             <div class="field-row">
-                <div class="field">
-                    <label class="field-label">FIRST NAME</label>
+                <div class="field" data-required>
+                    <label class="field-label">FIRST NAME <span class="req">*</span></label>
                     <input type="text" name="first_name" class="field-input" placeholder="First name">
+                    <div class="field-error">Required</div>
                 </div>
-                <div class="field">
-                    <label class="field-label">LAST NAME</label>
+                <div class="field" data-required>
+                    <label class="field-label">LAST NAME <span class="req">*</span></label>
                     <input type="text" name="last_name" class="field-input" placeholder="Last name">
+                    <div class="field-error">Required</div>
                 </div>
             </div>
-            <div class="field">
-                <label class="field-label">ROLE</label>
+            <div class="field" data-required>
+                <label class="field-label">ROLE <span class="req">*</span></label>
                 <input type="text" name="role" class="field-input" placeholder="Title and team">
+                <div class="field-error">Required</div>
             </div>
             <div class="field-row">
                 <div class="field">
@@ -471,7 +508,7 @@
                     <input type="url" name="linkedin" class="field-input" placeholder="linkedin.com/in/...">
                 </div>
                 <div class="field">
-                    <label class="field-label">GITHUB <span class="opt">// if you have one</span></label>
+                    <label class="field-label">GITHUB <span class="opt">// optional</span></label>
                     <input type="url" name="github" class="field-input" placeholder="github.com/...">
                 </div>
             </div>
@@ -508,13 +545,14 @@
                 </div>
             </div>
 
-            <div class="field">
-                <label class="field-label">OTHER PLATFORMS OR TOOLS <span class="opt">// if not listed above</span></label>
+            <div class="field" id="otherPlatformsField">
+                <label class="field-label">OTHER PLATFORMS OR TOOLS <span class="opt">// if nothing checked above, tell us what you use</span></label>
                 <input type="text" name="other_platforms" class="field-input" placeholder="e.g. Netlify, Fly.io, Cloudflare Workers, Heroku...">
+                <div class="field-error">If you haven't checked any tools above, tell us what you use here</div>
             </div>
 
             <div class="field">
-                <label class="field-label">HARDWARE</label>
+                <label class="field-label">HARDWARE <span class="opt">// optional</span></label>
                 <input type="text" name="hardware" class="field-input" placeholder="e.g. Mac Mini M4 Pro 64GB, MacBook Air M3, custom Linux box...">
             </div>
 
@@ -531,18 +569,19 @@
             <h2 class="section-title">What you've built.</h2>
             <p class="section-desc">Not what you&rsquo;ve used &mdash; what you&rsquo;ve made. This is the part that matters most.</p>
 
-            <div class="field">
-                <label class="field-label">DESCRIBE YOUR BEST AI PROJECT</label>
+            <div class="field" data-required>
+                <label class="field-label">DESCRIBE YOUR BEST AI PROJECT <span class="req">*</span></label>
                 <textarea name="project_description" class="field-textarea" placeholder="What is it? What problem does it solve? Who uses it? Be specific — &quot;I built an agent that books travel for my family&quot; beats &quot;I work with AI tools.&quot;"></textarea>
+                <div class="field-error">This is the part that matters most. Tell us what you've built.</div>
             </div>
 
             <div class="field">
-                <label class="field-label">LINK TO THE PROJECT <span class="opt">// GitHub, live URL, or demo video</span></label>
+                <label class="field-label">LINK TO THE PROJECT <span class="opt">// optional — GitHub, live URL, or demo video</span></label>
                 <input type="url" name="project_link" class="field-input" placeholder="e.g. github.com/you/project or myapp.vercel.app">
             </div>
 
             <div class="field">
-                <label class="field-label">OR UPLOAD A SCREENSHOT / DEMO</label>
+                <label class="field-label">OR UPLOAD A SCREENSHOT / DEMO <span class="opt">// optional</span></label>
                 <input type="file" name="screenshots" class="field-file" accept="image/*,.pdf,.mp4" multiple>
                 <p class="field-hint">If you'd rather show than link. Images, PDFs, or short videos.</p>
             </div>
@@ -576,20 +615,23 @@
             <h2 class="section-title">How you think.</h2>
             <p class="section-desc">Honesty over polish. How you handle frustration tells us more than any success story.</p>
 
-            <div class="field">
-                <label class="field-label">MOST FRUSTRATED YOU'VE BEEN WITH AI &mdash; AND WHAT YOU DID</label>
+            <div class="field" data-required>
+                <label class="field-label">MOST FRUSTRATED YOU'VE BEEN WITH AI &mdash; AND WHAT YOU DID <span class="req">*</span></label>
                 <textarea name="frustration_story" class="field-textarea" placeholder="The hallucination that wasted four hours. The agent that looped until 2am. The prototype that broke on demo day. What happened, and how did you push through?"></textarea>
                 <p class="field-hint">This tells us more about you than any success story.</p>
+                <div class="field-error">Required</div>
             </div>
 
-            <div class="field">
-                <label class="field-label">A REAL PROBLEM YOU'VE SOLVED (OR ARE SOLVING)</label>
+            <div class="field" data-required>
+                <label class="field-label">A REAL PROBLEM YOU'VE SOLVED (OR ARE SOLVING) <span class="req">*</span></label>
                 <textarea name="business_problem" class="field-textarea" placeholder="Not &quot;I built a chatbot&quot; — but &quot;I built X because Y was costing us Z.&quot;"></textarea>
+                <div class="field-error">Required</div>
             </div>
 
-            <div class="field">
-                <label class="field-label">WHAT YOU'RE STRUGGLING WITH RIGHT NOW</label>
+            <div class="field" data-required>
+                <label class="field-label">WHAT YOU'RE STRUGGLING WITH RIGHT NOW <span class="req">*</span></label>
                 <textarea name="current_struggle" class="field-textarea" placeholder="The thing you can't figure out. The problem you'd bring to a room of ten smart people."></textarea>
+                <div class="field-error">Required</div>
             </div>
         </div>
 
@@ -599,14 +641,16 @@
             <h2 class="section-title">What you bring.</h2>
             <p class="section-desc">Not what you want to get &mdash; what you want to give.</p>
 
-            <div class="field">
-                <label class="field-label">IF YOU HAD 10 MINUTES AT YOUR FIRST SESSION, WHAT WOULD YOU DEMO?</label>
+            <div class="field" data-required>
+                <label class="field-label">IF YOU HAD 10 MINUTES AT YOUR FIRST SESSION, WHAT WOULD YOU DEMO? <span class="req">*</span></label>
                 <textarea name="demo_pitch" class="field-textarea" style="min-height: 90px;" placeholder="A project, a workflow, a lesson learned, a spectacular failure?"></textarea>
+                <div class="field-error">Required</div>
             </div>
 
             <div class="field">
-                <label class="field-label">DOMAIN EXPERTISE YOU BRING THAT MOST AI BUILDERS DON'T HAVE</label>
-                <input type="text" name="domain_expertise" class="field-input" placeholder="e.g. private banking, healthcare regulation, supply chain, design...">
+                <label class="field-label">WHAT ELSE ARE YOU PASSIONATE ABOUT BEYOND BANKING? <span class="opt">// optional</span></label>
+                <input type="text" name="domain_expertise" class="field-input" placeholder="e.g. healthcare AI, education, climate tech, creative tools, supply chain...">
+                <p class="field-hint">Banking is a given. What other rabbit holes have you gone down?</p>
             </div>
         </div>
 
@@ -626,7 +670,40 @@
     </div>
 
     <script>
+        function validateForm() {
+            const form = document.getElementById('applicationForm');
+            let valid = true;
+
+            form.querySelectorAll('.field.has-error').forEach(f => f.classList.remove('has-error'));
+            document.getElementById('validationBanner').classList.remove('show');
+
+            form.querySelectorAll('.field[data-required]').forEach(field => {
+                const input = field.querySelector('.field-input, .field-textarea');
+                if (input && !input.value.trim()) {
+                    field.classList.add('has-error');
+                    valid = false;
+                }
+            });
+
+            const anyToolChecked = form.querySelectorAll('input[name="ai_tools"]:checked, input[name="deployment"]:checked').length > 0;
+            const otherPlatforms = form.querySelector('input[name="other_platforms"]');
+            if (!anyToolChecked && !otherPlatforms.value.trim()) {
+                document.getElementById('otherPlatformsField').classList.add('has-error');
+                valid = false;
+            }
+
+            if (!valid) {
+                document.getElementById('validationBanner').classList.add('show');
+                const firstError = form.querySelector('.field.has-error');
+                if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+
+            return valid;
+        }
+
         async function submitApplication() {
+            if (!validateForm()) return;
+
             const form = document.getElementById('applicationForm');
             const formData = new FormData();
 
@@ -660,6 +737,14 @@
                 alert('Something went wrong. Please try again.');
             }
         }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.field[data-required] .field-input, .field[data-required] .field-textarea').forEach(input => {
+                input.addEventListener('input', () => {
+                    if (input.value.trim()) input.closest('.field').classList.remove('has-error');
+                });
+            });
+        });
     </script>
 
 </body>
