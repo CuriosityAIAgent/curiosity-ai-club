@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Curiosity AI Club</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --paper:           #F2EDE0;
+            --paper-soft:      #E8E2CE;
+            --paper-deep:      #DBD1B7;
+            --deep:            #14251B;
+            --deep-2:          #1F3428;
+            --deep-3:          #2E4A38;
+            --ink:             #0F1410;
+            --ink-2:           #222821;
+            --accent:          #2F5B3E;
+            --accent-hover:    #3E6F4E;
+            --accent-soft:     rgba(47,91,62,0.08);
+            --brass:           #C9A15B;
+            --fog:             #4B4A3F;
+            --fog-2:           #7E7C70;
+            --fog-on-deep:     rgba(242,237,224,0.86);
+            --fog-on-deep-2:   rgba(242,237,224,0.58);
+            --line-paper:      rgba(26,32,22,0.10);
+            --line-paper-2:    rgba(26,32,22,0.06);
+            --line-deep:       rgba(242,237,224,0.14);
+            --sans:            'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            --mono:            'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
+        }
+
+        .on-deep {
+            --accent: var(--brass);
+            --accent-hover: #D9B370;
+            --accent-soft: rgba(201,161,91,0.10);
+        }
+
+        html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+        body {
+            font-family: var(--sans);
+            font-weight: 400;
+            line-height: 1.6;
+            font-size: 17px;
+            background: var(--paper);
+            color: var(--ink);
+            overflow-x: hidden;
+        }
+
+        ::selection { background: var(--accent); color: var(--paper); }
+
+        .dot-grid-paper {
+            background-image: radial-gradient(circle, rgba(26,32,22,0.08) 1px, transparent 1px);
+            background-size: 28px 28px;
+        }
+        .dot-grid-deep {
+            background-image: radial-gradient(circle, rgba(242,237,224,0.06) 1px, transparent 1px);
+            background-size: 28px 28px;
+        }
+
+        /* ─── NAV ─── */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            padding: 1.1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(242,237,224,0.88);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border-bottom: 1px solid var(--line-paper);
+            font-family: var(--mono);
+            font-size: 0.72rem;
+        }
+        .nav-mark {
+            font-family: var(--mono);
+            font-weight: 500;
+            color: var(--ink);
+            letter-spacing: 0.01em;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .nav-mark .bracket { color: var(--accent); font-weight: 500; }
+        .nav-mark .dot {
+            width: 7px; height: 7px;
+            background: var(--accent);
+            border-radius: 50%;
+            display: inline-block;
+            animation: blink 1.6s infinite;
+            box-shadow: 0 0 8px rgba(47,91,62,0.5);
+        }
+        @keyframes blink { 0%, 50% { opacity: 1; } 51%, 100% { opacity: 0.25; } }
+
+        .nav-links { display: flex; align-items: center; gap: 1.8rem; }
+        .nav-link {
+            color: var(--fog);
+            text-decoration: none;
+            transition: color 0.2s;
+            letter-spacing: 0.02em;
+        }
+        .nav-link::before { content: '/ '; color: var(--fog-2); }
+        .nav-link:hover { color: var(--ink); }
+
+        .nav-cta {
+            font-family: var(--mono);
+            color: var(--paper);
+            background: var(--accent);
+            text-decoration: none;
+            padding: 0.55rem 1.1rem;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            transition: background 0.2s;
+        }
+        .nav-cta:hover { background: var(--accent-hover); }
+
+        /* ─── HERO ─── */
+        .hero {
+            min-height: 100vh;
+            padding: 8rem 2.5rem 3rem;
+            position: relative;
+            display: grid;
+            grid-template-columns: 1fr 260px;
+            gap: 3rem;
+            align-items: end;
+            border-bottom: 1px solid var(--line-paper);
+            background: var(--paper);
+        }
+
+        .hero-eyebrow {
+            font-family: var(--mono);
+            font-size: 0.72rem;
+            color: var(--accent);
+            letter-spacing: 0.05em;
+            margin-bottom: 3.5rem;
+            display: flex;
+            gap: 0.8rem;
+            align-items: center;
+            font-weight: 500;
+        }
+        .hero-eyebrow .sep { color: var(--fog-2); }
+        .hero-eyebrow .pulse {
+            width: 8px; height: 8px; background: var(--accent);
+            border-radius: 50%; animation: blink 1.6s infinite;
+            box-shadow: 0 0 10px rgba(47,91,62,0.6);
+        }
+
+        .hero-headline {
+            font-family: var(--sans);
+            font-weight: 600;
+            font-size: clamp(3.2rem, 9.5vw, 9rem);
+            line-height: 0.92;
+            letter-spacing: -0.04em;
+            margin-bottom: 2.5rem;
+            color: var(--ink);
+        }
+        .hero-headline .accent { color: var(--accent); }
+        .hero-headline .cursor {
+            display: inline-block;
+            width: 0.55em;
+            height: 0.85em;
+            background: var(--accent);
+            vertical-align: -0.05em;
+            margin-left: 0.08em;
+            animation: blink 1.1s infinite;
+        }
+
+        .hero-sub {
+            font-weight: 400;
+            font-size: clamp(1.05rem, 1.4vw, 1.25rem);
+            color: var(--ink-2);
+            max-width: 540px;
+            line-height: 1.55;
+            margin-bottom: 3rem;
+        }
+
+        /* ─── FOUNDER SPOTLIGHT ─── */
+        .founder-section {
+            background: var(--paper-soft);
+            padding: 6rem 2rem;
+            text-align: center;
+            border-bottom: 1px solid var(--line-paper);
+        }
+        .founder-tag {
+            font-family: var(--mono);
+            font-size: 0.72rem;
+            letter-spacing: 0.1em;
+            color: var(--accent);
+            font-weight: 500;
+            margin-bottom: 2rem;
+        }
+        .founder-tag::before { content: '// '; color: var(--fog-2); }
+        .founder-photo-lg {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--accent);
+            margin: 0 auto 2.5rem;
+            display: block;
+            box-shadow: 0 4px 20px rgba(47,91,62,0.12);
+        }
+        .founder-quote-lg {
+            font-size: clamp(1.35rem, 2.4vw, 1.75rem);
+            font-weight: 400;
+            font-style: italic;
+            color: var(--ink);
+            line-height: 1.75;
+            max-width: 660px;
+            margin: 0 auto 1.8rem;
+        }
+        .founder-name {
+            font-family: var(--mono);
+            font-size: 0.78rem;
+            color: var(--accent);
+            letter-spacing: 0.1em;
+            font-weight: 500;
+        }
+
+        .hero-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 1.8rem;
+            font-family: var(--mono);
+            border-left: 1px solid var(--line-paper);
+            padding-left: 1.5rem;
+            padding-bottom: 1rem;
+        }
+        .meta-block .label {
+            font-size: 0.65rem;
+            color: var(--fog);
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        .meta-block .value {
+            font-size: 1.6rem;
+            font-weight: 500;
+            color: var(--ink);
+            letter-spacing: -0.01em;
+        }
+        .meta-block .value.big {
+            font-size: 3rem;
+            color: var(--accent);
+            font-weight: 500;
+            line-height: 1;
+        }
+        .meta-block .value.small {
+            font-size: 0.95rem;
+            font-weight: 400;
+            line-height: 1.5;
+        }
+        .meta-block .status-dot {
+            display: inline-block;
+            width: 7px; height: 7px;
+            background: var(--accent);
+            border-radius: 50%;
+            margin-right: 0.4rem;
+            animation: blink 1.6s infinite;
+        }
+
+        .scroll-hint {
+            position: absolute;
+            bottom: 2rem;
+            left: 2.5rem;
+            font-family: var(--mono);
+            font-size: 0.68rem;
+            color: var(--fog);
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+        .scroll-hint .arrow { animation: slide 2s infinite; color: var(--accent); }
+        @keyframes slide { 0%, 100% { transform: translateY(0); opacity: 0.5; } 50% { transform: translateY(4px); opacity: 1; } }
+
+        /* ─── SECTIONS ─── */
+        section { padding: 8rem 2.5rem; position: relative; }
+        .inner { max-width: 1200px; margin: 0 auto; }
+        .inner-narrow { max-width: 820px; margin: 0 auto; }
+
+        .on-paper { background: var(--paper); color: var(--ink); }
+        .on-paper-soft { background: var(--paper-soft); color: var(--ink); }
+        .on-paper-deep { background: var(--paper-deep); color: var(--ink); }
+        .on-deep { background: var(--deep); color: var(--paper); }
+
+        .section-head {
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            gap: 3rem;
+            margin-bottom: 4rem;
+            align-items: baseline;
+        }
+        .section-tag {
+            font-family: var(--mono);
+            font-size: 0.72rem;
+            letter-spacing: 0.06em;
+            color: var(--accent);
+            font-weight: 500;
+        }
+        .section-tag::before { content: '// '; color: var(--fog-2); }
+        .on-deep .section-tag::before { color: rgba(242,237,224,0.4); }
+
+        .section-title {
+            font-family: var(--sans);
+            font-weight: 500;
+            font-size: clamp(2rem, 4.2vw, 3.6rem);
+            line-height: 1;
+            letter-spacing: -0.028em;
+            color: var(--ink);
+        }
+        .on-deep .section-title { color: var(--paper); }
+        .section-title .accent { color: var(--accent); }
+
+        /* ─── CYCLE ─── */
+        .cycle-wrap { border-top: 1px solid var(--line-paper); }
+
+        .cycle-row {
+            display: grid;
+            grid-template-columns: 80px 1fr 2fr;
+            gap: 2rem;
+            padding: 1.8rem 0;
+            border-bottom: 1px solid var(--line-paper);
+            align-items: baseline;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .cycle-row::before {
+            content: '';
+            position: absolute;
+            left: -1rem;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--accent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .cycle-row:hover { background: var(--accent-soft); padding-left: 1rem; }
+        .cycle-row:hover::before { opacity: 1; }
+
+        .cycle-num {
+            font-family: var(--mono);
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--fog);
+        }
+        .cycle-row:hover .cycle-num { color: var(--accent); }
+
+        .cycle-name {
+            font-family: var(--sans);
+            font-weight: 500;
+            font-size: clamp(1.3rem, 2.1vw, 1.9rem);
+            letter-spacing: -0.02em;
+            color: var(--ink);
+        }
+
+        .cycle-desc {
+            font-weight: 400;
+            font-size: 1rem;
+            color: var(--fog);
+            line-height: 1.6;
+            max-width: 520px;
+        }
+
+        .cycle-punchline {
+            margin-top: 4rem;
+            padding-top: 3rem;
+            border-top: 1px solid var(--line-paper);
+            font-weight: 400;
+            font-size: clamp(1.15rem, 1.9vw, 1.5rem);
+            line-height: 1.5;
+            max-width: 720px;
+            color: var(--ink);
+        }
+        .cycle-punchline .accent {
+            color: var(--accent);
+            font-weight: 500;
+            text-decoration: underline;
+            text-decoration-thickness: 3px;
+            text-underline-offset: 5px;
+        }
+
+        /* ─── QUOTE BLOCKS ─── */
+        .quote-block {
+            display: flex;
+            align-items: flex-start;
+            gap: 1.5rem;
+            padding: 2rem 2.5rem;
+            background: var(--accent-soft);
+            border-left: 4px solid var(--accent);
+            margin-top: 2.5rem;
+        }
+        .quote-block + .quote-block {
+            margin-top: 1rem;
+        }
+        .quote-portrait {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--paper-deep);
+            flex-shrink: 0;
+        }
+        .quote-content {
+            flex: 1;
+        }
+        .quote-block blockquote {
+            font-size: 1.15rem;
+            font-weight: 400;
+            line-height: 1.6;
+            color: var(--ink);
+            font-style: italic;
+            margin-bottom: 0.6rem;
+        }
+        .quote-block cite {
+            font-family: var(--mono);
+            font-size: 0.72rem;
+            color: var(--fog);
+            font-style: normal;
+            letter-spacing: 0.08em;
+        }
+
+        /* ─── IMAGE BREAKS ─── */
+        .img-break {
+            width: 100%;
+            height: 340px;
+            overflow: hidden;
+            position: relative;
+        }
+        .img-break img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            filter: brightness(0.82) saturate(0.85);
+        }
+
+        /* ─── BODY PROSE ─── */
+        .body-prose {
+            font-weight: 400;
+            font-size: 1.15rem;
+            line-height: 1.7;
+        }
+        .body-prose p { margin-bottom: 1.6rem; color: var(--fog); }
+        .body-prose p.strong-text { color: var(--ink); font-weight: 400; }
+        .body-prose p.emph { color: var(--ink); font-weight: 500; font-size: 1.5rem; line-height: 1.4; }
+        .body-prose p.emph .accent { color: var(--accent); }
+
+        /* ─── MANIFESTO (deep forest) ─── */
+        .manifesto-wrap { padding: 10rem 2.5rem; }
+        .manifesto {
+            font-weight: 400;
+            font-size: clamp(1.5rem, 3vw, 2.5rem);
+            line-height: 1.4;
+            letter-spacing: -0.012em;
+            max-width: 940px;
+            color: var(--fog-on-deep);
+        }
+        .manifesto strong { color: var(--paper); font-weight: 600; }
+        .manifesto .accent { color: var(--accent); font-weight: 500; }
+        .manifesto-footer {
+            font-family: var(--mono);
+            font-size: 0.75rem;
+            color: var(--fog-on-deep-2);
+            margin-top: 4rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .manifesto-footer .line { flex: 1; height: 1px; background: var(--line-deep); max-width: 260px; }
+
+        /* ─── TRACKS ─── */
+        .tracks {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        .track {
+            padding: 2.5rem;
+            border: 1px solid var(--line-paper);
+            background: var(--paper);
+            position: relative;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+        .track:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(26,32,22,0.08);
+        }
+        .track::before {
+            content: '';
+            position: absolute;
+            top: -1px; left: -1px;
+            width: 20px; height: 20px;
+            border-top: 3px solid var(--accent);
+            border-left: 3px solid var(--accent);
+        }
+        .track::after {
+            content: '';
+            position: absolute;
+            bottom: -1px; right: -1px;
+            width: 20px; height: 20px;
+            border-bottom: 3px solid var(--accent);
+            border-right: 3px solid var(--accent);
+        }
+        .track-cmd {
+            font-family: var(--mono);
+            font-size: 0.75rem;
+            color: var(--fog);
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+        }
+        .track-cmd .prompt { color: var(--accent); font-weight: 600; }
+        .track-cmd .path { color: var(--ink); }
+        .track h3 {
+            font-weight: 600;
+            font-size: 1.9rem;
+            line-height: 1.05;
+            letter-spacing: -0.025em;
+            margin-bottom: 1.2rem;
+            color: var(--ink);
+        }
+        .track p {
+            font-weight: 400;
+            font-size: 1rem;
+            line-height: 1.65;
+            color: var(--fog);
+        }
+
+        /* ─── TRAITS ─── */
+        .traits-head {
+            font-family: var(--mono);
+            font-size: 0.78rem;
+            color: var(--fog);
+            margin-top: 5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-weight: 500;
+        }
+        .traits-head .line { flex: 1; height: 1px; background: var(--line-paper); max-width: 180px; }
+        .traits-head .label { color: var(--accent); letter-spacing: 0.08em; }
+
+        .traits {
+            list-style: none;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem 2rem;
+            margin-top: 1rem;
+        }
+        .traits li {
+            font-family: var(--mono);
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: var(--ink);
+            padding: 0.9rem 0;
+            display: flex;
+            align-items: baseline;
+            gap: 0.8rem;
+            border-bottom: 1px solid var(--line-paper);
+        }
+        .traits li .box { color: var(--accent); font-weight: 600; font-size: 0.85rem; flex-shrink: 0; }
+
+        /* ─── FORMAT ─── */
+        .format-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0;
+            margin-top: 2rem;
+            border-top: 1px solid var(--line-paper);
+            border-bottom: 1px solid var(--line-paper);
+        }
+        .format-card {
+            padding: 3rem 2rem;
+            border-right: 1px solid var(--line-paper);
+            background: var(--paper);
+            transition: background 0.3s;
+        }
+        .format-card:hover { background: var(--accent-soft); }
+        .format-card:last-child { border-right: none; }
+        .format-num {
+            font-family: var(--mono);
+            font-size: 0.72rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+        .format-big {
+            font-weight: 600;
+            font-size: 3.8rem;
+            line-height: 1;
+            letter-spacing: -0.045em;
+            margin-bottom: 0.3rem;
+            color: var(--ink);
+        }
+        .format-big .unit { color: var(--fog-2); font-weight: 400; }
+        .format-label {
+            font-family: var(--mono);
+            font-size: 0.72rem;
+            color: var(--fog);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+        }
+        .format-card p {
+            font-weight: 400;
+            font-size: 0.95rem;
+            color: var(--fog);
+            line-height: 1.6;
+        }
+
+        /* ─── CTA / APPLY ─── */
+        .apply-section {
+            background: var(--paper-deep);
+        }
+        .apply-head {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: end;
+            margin-bottom: 3rem;
+            padding-bottom: 3rem;
+            border-bottom: 1px solid var(--line-paper);
+        }
+        .apply-counter {
+            font-weight: 600;
+            font-size: clamp(6rem, 15vw, 12rem);
+            line-height: 0.85;
+            letter-spacing: -0.06em;
+            color: var(--accent);
+        }
+        .apply-counter .under {
+            display: inline-block;
+            width: 0.3em;
+            height: 0.08em;
+            background: var(--accent);
+            vertical-align: 0.2em;
+            margin-left: 0.05em;
+            animation: blink 1.1s infinite;
+        }
+        .apply-counter-sub {
+            font-family: var(--mono);
+            font-size: 0.75rem;
+            color: var(--fog);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-top: 0.8rem;
+            font-weight: 500;
+        }
+        .apply-copy h2 {
+            font-weight: 500;
+            font-size: clamp(1.9rem, 3.2vw, 2.8rem);
+            line-height: 1.05;
+            letter-spacing: -0.025em;
+            margin-bottom: 1rem;
+            color: var(--ink);
+        }
+        .apply-copy h2 .accent { color: var(--accent); }
+        .apply-copy p {
+            font-weight: 400;
+            color: var(--fog);
+            max-width: 440px;
+            line-height: 1.55;
+            font-size: 1.05rem;
+        }
+
+        .apply-cta-wrap {
+            text-align: center;
+            padding-top: 1rem;
+        }
+        .apply-cta-btn {
+            display: inline-block;
+            font-family: var(--mono);
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            color: var(--paper);
+            background: var(--accent);
+            text-decoration: none;
+            padding: 1.2rem 3.5rem;
+            transition: all 0.2s;
+        }
+        .apply-cta-btn:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+        }
+        .apply-note {
+            font-family: var(--mono);
+            font-size: 0.72rem;
+            color: var(--fog);
+            margin-top: 1.5rem;
+        }
+
+        /* ─── FOOTER ─── */
+        footer {
+            padding: 5rem 2.5rem 3rem;
+            background: var(--deep);
+            color: var(--paper);
+            position: relative;
+            --accent: var(--brass);
+        }
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(to right, var(--brass) 0%, transparent 45%);
+        }
+        .footer-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 3rem;
+            align-items: start;
+        }
+        .footer-col h5 {
+            font-family: var(--mono);
+            font-size: 0.7rem;
+            color: var(--brass);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+        .footer-col p {
+            font-family: var(--mono);
+            font-size: 0.85rem;
+            color: var(--paper);
+            display: block;
+            line-height: 1.8;
+        }
+        .footer-col .mute { color: var(--fog-on-deep-2); }
+        .footer-col .live { color: var(--brass); }
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 4rem auto 0;
+            padding-top: 2rem;
+            border-top: 1px solid var(--line-deep);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: var(--mono);
+            font-size: 0.72rem;
+            color: var(--fog-on-deep-2);
+            gap: 2rem;
+        }
+        .footer-bottom span:first-child { color: var(--paper); }
+
+        /* ─── ANIMATIONS ─── */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 900px) {
+            .hero { grid-template-columns: 1fr; padding: 7rem 1.5rem 5rem; gap: 2rem; }
+            .hero-meta { border-left: none; border-top: 1px solid var(--line-paper); padding-left: 0; padding-top: 2rem; flex-direction: row; flex-wrap: wrap; gap: 2rem; }
+            .scroll-hint { display: none; }
+            .section-head { grid-template-columns: 1fr; gap: 1rem; margin-bottom: 3rem; }
+            .tracks { grid-template-columns: 1fr; }
+            .format-grid { grid-template-columns: 1fr 1fr !important; }
+            .format-card { border-right: none; border-bottom: 1px solid var(--line-paper); }
+            .format-card:last-child { border-bottom: none; }
+            .cycle-row { grid-template-columns: 50px 1fr; gap: 1rem; }
+            .cycle-row .cycle-desc { grid-column: 1 / -1; margin-top: 0.3rem; }
+            .traits { grid-template-columns: 1fr; }
+            .apply-head { grid-template-columns: 1fr; gap: 2rem; }
+            .footer-inner { grid-template-columns: 1fr; gap: 2rem; }
+            .footer-bottom { flex-direction: column; gap: 1rem; text-align: center; }
+            .nav-link { display: none; }
+            nav { padding: 1rem 1.25rem; }
+            section { padding: 5rem 1.5rem; }
+            .manifesto-wrap { padding: 6rem 1.5rem; }
+            .img-break { height: 220px; }
+            .quote-block { flex-direction: column; padding: 1.5rem; }
+            .quote-portrait { width: 56px; height: 56px; }
+            .hero-quote { flex-direction: column; gap: 0.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="nav-mark">
+            <span class="bracket">[</span>
+            <span class="dot"></span>
+            &nbsp;CURIOSITY.AI / CLUB
+            <span class="bracket">]</span>
+        </div>
+        <div class="nav-links">
+            <a href="#cycle" class="nav-link">journey</a>
+            <a href="#manifesto" class="nav-link">manifesto</a>
+            <a href="#who" class="nav-link">membership</a>
+            <a href="#format" class="nav-link">format</a>
+            <a href="apply.html" class="nav-cta">apply &rarr;</a>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero dot-grid-paper">
+        <div class="hero-left">
+            <div class="hero-eyebrow fade-up">
+                <span class="pulse"></span>
+                <span>FOUNDING COHORT</span>
+                <span class="sep">&middot;</span>
+                <span>LONDON</span>
+                <span class="sep">&middot;</span>
+                <span>2026</span>
+            </div>
+            <h1 class="hero-headline fade-up">
+                Here&rsquo;s to<br>
+                the ones who<br>
+                <span class="accent">build</span><span class="cursor"></span>
+            </h1>
+            <p class="hero-sub fade-up">
+                A club for the deeply curious. For people who don&rsquo;t just talk about AI &mdash; they can&rsquo;t stop building with it.
+            </p>
+        </div>
+
+        <aside class="hero-meta">
+            <div class="meta-block"><div class="label">Seats</div><div class="value big">008</div></div>
+            <div class="meta-block"><div class="label">Chapter</div><div class="value small">London</div></div>
+            <div class="meta-block"><div class="label">Next</div><div class="value small">Hong Kong<br>Singapore</div></div>
+            <div class="meta-block"><div class="label">Status</div><div class="value small" style="color: var(--accent);"><span class="status-dot"></span>Accepting interest</div></div>
+        </aside>
+
+    </section>
+
+    <!-- ADAM — FOUNDER & SPONSOR -->
+    <section class="founder-section">
+        <div class="founder-tag fade-up">FOUNDER &amp; SPONSOR</div>
+        <img src="Adam.jpeg" alt="Adam" class="founder-photo-lg fade-up">
+        <p class="founder-quote-lg fade-up">
+            &ldquo;If you have found yourself on a weekend, hours into a session, losing track of time, being inspired by the future ahead of us &mdash; this is for you.&rdquo;
+        </p>
+        <p class="founder-name fade-up">&mdash; ADAM</p>
+    </section>
+
+    <!-- THE CYCLE -->
+    <section class="on-paper-soft" id="cycle">
+        <div class="inner">
+            <div class="section-head fade-up">
+                <div class="section-tag">THE TRUTH NO ONE TALKS ABOUT</div>
+                <h2 class="section-title">The cycle every<br>builder knows.</h2>
+            </div>
+
+            <div class="cycle-wrap">
+                <div class="cycle-row fade-up"><div class="cycle-num">01</div><div class="cycle-name">Excitement</div><div class="cycle-desc">You&rsquo;ve seen what&rsquo;s possible. You can&rsquo;t sleep. You open the laptop again at midnight.</div></div>
+                <div class="cycle-row fade-up"><div class="cycle-num">02</div><div class="cycle-name">Frustration</div><div class="cycle-desc">The tool hallucinates. The agent loops. The prototype breaks at 1am and you&rsquo;ve been at it for six hours.</div></div>
+                <div class="cycle-row fade-up"><div class="cycle-num">03</div><div class="cycle-name">Breakthrough</div><div class="cycle-desc">You try a different approach. Suddenly it works &mdash; better than you imagined it could.</div></div>
+                <div class="cycle-row fade-up"><div class="cycle-num">04</div><div class="cycle-name">Repeat</div><div class="cycle-desc">You&rsquo;ve levelled up. And now you can&rsquo;t go back.</div></div>
+            </div>
+
+            <p class="cycle-punchline fade-up">
+                If you recognise this cycle &mdash; if you&rsquo;ve lived it, over and over, and <span class="accent">kept coming back</span> &mdash; you&rsquo;re one of us.
+            </p>
+
+            <div class="quote-block fade-up">
+                <img src="Haresh.jpeg" alt="Haresh" class="quote-portrait">
+                <div class="quote-content">
+                    <blockquote>&ldquo;Every breakthrough I&rsquo;ve had with AI came right after the moment I wanted to give up. The frustration is the price of admission &mdash; and the people who pay it are the ones worth learning from.&rdquo;</blockquote>
+                    <cite>&mdash; HARESH / CO-FOUNDER</cite>
+                </div>
+            </div>
+
+            <div class="quote-block fade-up">
+                <img src="Craig.jpeg" alt="Craig" class="quote-portrait">
+                <div class="quote-content">
+                    <blockquote>&ldquo;The best ideas I&rsquo;ve seen didn&rsquo;t come from the smartest person in the room. They came from the most curious one &mdash; the one who went home and actually built it.&rdquo;</blockquote>
+                    <cite>&mdash; CRAIG / CO-FOUNDER</cite>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PREMISE -->
+    <section class="on-paper" id="premise">
+        <div class="inner">
+            <div class="section-head fade-up">
+                <div class="section-tag">WHY THIS EXISTS</div>
+                <h2 class="section-title">Not another<br>networking group.</h2>
+            </div>
+
+            <div class="body-prose inner-narrow fade-up">
+                <p>There are plenty of conferences. No shortage of webinars. LinkedIn is full of people who &ldquo;leverage AI.&rdquo;</p>
+                <p class="emph">This isn&rsquo;t <span class="accent">that</span>.</p>
+                <p class="strong-text">This is a room. A small one. Ten people who have gone well beyond asking questions and started building answers. People who have shipped something &mdash; a prototype, a tool, an agent, a product &mdash; and want to be around others doing the same.</p>
+                <p>We connect outside of work hours because this matters enough to give up an evening for it. Monthly sessions to share what we&rsquo;re building. A group chat that&rsquo;s always on for the problems that can&rsquo;t wait. Quarterly deep-dives with someone from outside who&rsquo;s pushing the edge.</p>
+                <p class="strong-text">No panels. No presentations. No name badges. Just ten people, a table, and the thing they built last weekend.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- MANIFESTO (deep forest) -->
+    <section class="on-deep manifesto-wrap dot-grid-deep" id="manifesto">
+        <div class="inner">
+            <div class="section-tag fade-up" style="margin-bottom: 3rem;">A MANIFESTO FOR BUILDERS</div>
+            <p class="manifesto fade-up">
+                <strong>Here&rsquo;s to the ones who didn&rsquo;t wait for permission.</strong><br>
+                Who taught themselves at midnight.<br>
+                Who broke something on a Saturday, fixed it on a Sunday,<br>
+                and shipped it on a Monday.<br><br>
+                <strong>Who see a problem and reach for a keyboard,<br>not a committee.</strong><br>
+                Who know that the gap between an idea and a prototype<br>
+                is measured in <span class="accent">hours</span>, not quarters.<br><br>
+                This club is for them.
+            </p>
+            <div class="manifesto-footer fade-up">
+                <span class="line"></span>
+                <span>END / MANIFESTO</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- MEMBERSHIP -->
+    <section class="on-paper-soft" id="who">
+        <div class="inner">
+            <div class="section-head fade-up">
+                <div class="section-tag">MEMBERSHIP</div>
+                <h2 class="section-title">Two paths.<br>One <span class="accent">standard</span>.</h2>
+            </div>
+
+            <div class="tracks fade-up">
+                <div class="track">
+                    <div class="track-cmd"><span class="prompt">$</span> <span class="path">tracks/business-builder</span></div>
+                    <h3>The Business Builder</h3>
+                    <p>You&rsquo;ve pushed past the boundary. You didn&rsquo;t wait for IT to build it &mdash; you built it yourself. You&rsquo;ve stood up a prototype, wired up a database, put something live. You know the difference between an idea and a working demo. You&rsquo;ve crossed the line from &ldquo;wouldn&rsquo;t it be great if&rdquo; to &ldquo;here, let me show you.&rdquo;</p>
+                </div>
+                <div class="track">
+                    <div class="track-cmd"><span class="prompt">$</span> <span class="path">tracks/technical-builder</span></div>
+                    <h3>The Technical Builder</h3>
+                    <p>The bar is higher. We expect you to be building with AI &mdash; that&rsquo;s a given. What sets you apart is whether you understand <em>why</em> you&rsquo;re building it. Can you name the business problem? Can you explain the commercial logic? Have you built something beautiful &mdash; not just functional, but considered?</p>
+                </div>
+            </div>
+
+            <div class="traits-head fade-up">
+                <span class="line"></span>
+                <span class="label">WHAT WE ALL SHARE</span>
+                <span class="line"></span>
+            </div>
+            <ul class="traits fade-up">
+                <li><span class="box">[x]</span> We ship URLs, not screenshots of chat</li>
+                <li><span class="box">[x]</span> We compose multiple tools, not one chatbot</li>
+                <li><span class="box">[x]</span> We build agents and workflows, not just prompts</li>
+                <li><span class="box">[x]</span> We build rapid prototypes, not slide decks</li>
+                <li><span class="box">[x]</span> We manage state &mdash; databases, hosting, version control</li>
+                <li><span class="box">[x]</span> We&rsquo;ve solved real problems, not hypothetical ones</li>
+                <li><span class="box">[x]</span> We version and iterate &mdash; not start fresh every session</li>
+                <li><span class="box">[x]</span> We have a GitHub repo we&rsquo;d be happy to share</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- FORMAT -->
+    <section class="on-paper" id="format">
+        <div class="inner">
+            <div class="section-head fade-up">
+                <div class="section-tag">HOW IT WORKS</div>
+                <h2 class="section-title">Small by design.</h2>
+            </div>
+
+            <div class="format-grid fade-up" style="grid-template-columns: repeat(4, 1fr);">
+                <div class="format-card">
+                    <div class="format-num">// 01</div>
+                    <div class="format-big">7<span class="unit">/wk</span></div>
+                    <div class="format-label">Always-on chat</div>
+                    <p>A group chat for the problems that can&rsquo;t wait until next month. Share wins, debug together, stay connected.</p>
+                </div>
+                <div class="format-card">
+                    <div class="format-num">// 02</div>
+                    <div class="format-big">01<span class="unit">/mo</span></div>
+                    <div class="format-label">Monthly sessions</div>
+                    <p>Evenings, outside work hours. Show what you&rsquo;ve built, hear what others are working on.</p>
+                </div>
+                <div class="format-card">
+                    <div class="format-num">// 03</div>
+                    <div class="format-big">04<span class="unit">/yr</span></div>
+                    <div class="format-label">Quarterly deep-dives</div>
+                    <p>A dinner or offsite with an external builder pushing the edge of what&rsquo;s possible.</p>
+                </div>
+                <div class="format-card">
+                    <div class="format-num">// 04</div>
+                    <div class="format-big">03<span class="unit">/cities</span></div>
+                    <div class="format-label">Global chapters</div>
+                    <p>Starting in London. Hong Kong and Singapore to follow.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="apply-section" id="apply">
+        <div class="inner">
+            <div class="apply-head fade-up">
+                <div>
+                    <div class="apply-counter">008<span class="under"></span></div>
+                    <div class="apply-counter-sub">// FOUNDING SEATS REMAINING</div>
+                </div>
+                <div class="apply-copy">
+                    <h2>Express your <span class="accent">interest</span>.</h2>
+                    <p>Five sections. Some checkboxes, some open questions. Takes about 10 minutes if you don&rsquo;t overthink it.</p>
+                </div>
+            </div>
+            <div class="apply-cta-wrap fade-up">
+                <a href="apply.html" class="apply-cta-btn">Begin Application &rarr;</a>
+                <p class="apply-note">// We review applications weekly. No algorithms. No shortcuts.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-col">
+                <h5>// THE CLUB</h5>
+                <p>The Curiosity AI Club</p>
+                <p class="mute">Founded by builders,<br>for builders.</p>
+            </div>
+            <div class="footer-col">
+                <h5>// CHAPTERS</h5>
+                <p><span class="live">&bull;</span> London &nbsp;&nbsp;<span class="mute">// live</span></p>
+                <p>Hong Kong &nbsp;&nbsp;<span class="mute">// 2027</span></p>
+                <p>Singapore &nbsp;&nbsp;<span class="mute">// 2027</span></p>
+            </div>
+            <div class="footer-col">
+                <h5>// FOUNDERS</h5>
+                <p>Adam</p>
+                <p>Craig</p>
+                <p>Haresh</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>&copy; 2026 / CURIOSITY.AI.CLUB</span>
+            <span>&ldquo;Never doubt that a small group of thoughtful, committed citizens can change the world.&rdquo; &mdash; Margaret Mead</span>
+        </div>
+    </footer>
+
+    <script>
+        const obs = new IntersectionObserver(entries => {
+            entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+        document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
+    </script>
+
+</body>
+</html>

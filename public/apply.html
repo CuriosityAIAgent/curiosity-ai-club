@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apply — The Curiosity AI Club</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --paper:           #F2EDE0;
+            --paper-soft:      #E8E2CE;
+            --paper-deep:      #DBD1B7;
+            --deep:            #14251B;
+            --ink:             #0F1410;
+            --ink-2:           #222821;
+            --accent:          #2F5B3E;
+            --accent-hover:    #3E6F4E;
+            --accent-soft:     rgba(47,91,62,0.08);
+            --brass:           #C9A15B;
+            --fog:             #4B4A3F;
+            --fog-2:           #7E7C70;
+            --line-paper:      rgba(26,32,22,0.10);
+            --line-paper-2:    rgba(26,32,22,0.06);
+            --line-deep:       rgba(242,237,224,0.14);
+            --sans:            'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            --mono:            'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
+        }
+
+        html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+
+        body {
+            background: var(--paper);
+            color: var(--ink);
+            font-family: var(--sans);
+            font-weight: 400;
+            line-height: 1.6;
+            font-size: 17px;
+        }
+
+        ::selection { background: var(--accent); color: var(--paper); }
+
+        /* ── NAV ── */
+        nav {
+            padding: 1.1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--paper);
+            border-bottom: 1px solid var(--line-paper);
+            font-family: var(--mono);
+            font-size: 0.72rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            background: rgba(242,237,224,0.88);
+        }
+        .nav-mark {
+            font-weight: 500;
+            color: var(--ink);
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .nav-mark .bracket { color: var(--accent); }
+        .nav-mark .dot {
+            width: 7px; height: 7px;
+            background: var(--accent);
+            border-radius: 50%;
+            display: inline-block;
+            animation: blink 1.6s infinite;
+            box-shadow: 0 0 8px rgba(47,91,62,0.5);
+        }
+        @keyframes blink { 0%, 50% { opacity: 1; } 51%, 100% { opacity: 0.25; } }
+
+        .back-link {
+            color: var(--fog);
+            text-decoration: none;
+            letter-spacing: 0.02em;
+            transition: color 0.2s;
+        }
+        .back-link::before { content: '← '; color: var(--accent); }
+        .back-link:hover { color: var(--ink); }
+
+        /* ── HEADER ── */
+        header {
+            background: var(--paper-soft);
+            padding: 5rem 2rem 4rem;
+            text-align: center;
+            border-bottom: 1px solid var(--line-paper);
+        }
+        .header-cmd {
+            font-family: var(--mono);
+            font-size: 0.72rem;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+        }
+        .header-cmd .mute { color: var(--fog); }
+        header h1 {
+            font-weight: 500;
+            font-size: clamp(2rem, 4vw, 3rem);
+            line-height: 1.05;
+            letter-spacing: -0.025em;
+            margin-bottom: 0.8rem;
+            color: var(--ink);
+        }
+        header h1 .accent { color: var(--accent); }
+        header p {
+            color: var(--fog);
+            font-size: 1.05rem;
+            max-width: 440px;
+            margin: 0 auto;
+            line-height: 1.55;
+        }
+
+        /* ── FORM ── */
+        .form-wrapper {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 0 2rem 6rem;
+        }
+
+        .form-section {
+            padding: 3.5rem 0;
+            border-bottom: 1px solid var(--line-paper);
+        }
+        .form-section:last-of-type { border-bottom: none; }
+
+        .section-cmd {
+            font-family: var(--mono);
+            font-size: 0.75rem;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        .section-cmd .mute { color: var(--fog); }
+
+        .section-title {
+            font-weight: 500;
+            font-size: 1.8rem;
+            line-height: 1.05;
+            letter-spacing: -0.025em;
+            color: var(--ink);
+            margin-bottom: 0.4rem;
+        }
+
+        .section-desc {
+            font-size: 0.95rem;
+            color: var(--fog);
+            margin-bottom: 2.5rem;
+            line-height: 1.55;
+        }
+
+        /* Fields */
+        .field { margin-bottom: 1.8rem; }
+
+        .field-label {
+            display: block;
+            font-family: var(--mono);
+            font-size: 0.7rem;
+            letter-spacing: 0.06em;
+            color: var(--fog);
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        .field-label .opt { color: var(--fog-2); }
+
+        .field-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid var(--line-paper);
+            padding: 0.75rem 0;
+            font-family: var(--sans);
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--ink);
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .field-input:focus { border-bottom-color: var(--accent); }
+        .field-input::placeholder { color: var(--fog-2); }
+
+        .field-textarea {
+            width: 100%;
+            background: var(--paper-soft);
+            border: 1px solid var(--line-paper);
+            padding: 1.1rem;
+            font-family: var(--sans);
+            font-size: 0.98rem;
+            font-weight: 400;
+            color: var(--ink);
+            outline: none;
+            resize: vertical;
+            min-height: 120px;
+            line-height: 1.55;
+            transition: border-color 0.2s, background 0.2s;
+        }
+        .field-textarea:focus { border-color: var(--accent); background: var(--paper); }
+        .field-textarea::placeholder { color: var(--fog-2); }
+
+        .field-hint {
+            font-family: var(--mono);
+            font-size: 0.72rem;
+            color: var(--fog);
+            margin-top: 0.5rem;
+            font-weight: 500;
+        }
+        .field-hint::before { content: '// '; color: var(--accent); }
+
+        .field-sublabel {
+            font-size: 0.88rem;
+            color: var(--fog-2);
+            margin-bottom: 0.8rem;
+            line-height: 1.4;
+        }
+
+        .field-file {
+            width: 100%;
+            padding: 1rem;
+            background: var(--paper-soft);
+            border: 1px dashed var(--line-paper);
+            font-family: var(--mono);
+            font-size: 0.82rem;
+            color: var(--fog);
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+        }
+        .field-file:hover {
+            border-color: var(--accent);
+            background: var(--accent-soft);
+        }
+
+        .field-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.2rem;
+        }
+
+        /* Checkboxes */
+        .check-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.4rem;
+            margin-top: 0.5rem;
+        }
+        .check-grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+
+        .check-item {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            padding: 0.75rem 0.9rem;
+            border: 1px solid var(--line-paper);
+            cursor: pointer;
+            transition: all 0.15s;
+            user-select: none;
+            font-family: var(--mono);
+            background: var(--paper);
+        }
+        .check-item:hover {
+            border-color: var(--accent);
+            background: var(--accent-soft);
+        }
+        .check-item input { display: none; }
+
+        .check-box {
+            width: 15px; height: 15px;
+            border: 1.5px solid var(--fog-2);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 0.7rem;
+            color: transparent;
+            font-family: var(--mono);
+            font-weight: 600;
+            transition: all 0.15s;
+        }
+        .check-item input:checked + .check-box {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: var(--paper);
+        }
+        .check-item input:checked ~ .check-text { color: var(--ink); font-weight: 500; }
+
+        .check-text {
+            font-size: 0.82rem;
+            color: var(--fog);
+            transition: color 0.15s;
+        }
+
+        /* Radio pills */
+        .pill-row {
+            display: flex;
+            gap: 0.4rem;
+        }
+        .pill-item {
+            flex: 1;
+            text-align: center;
+            padding: 0.7rem 0.5rem;
+            background: var(--paper);
+            border: 1px solid var(--line-paper);
+            cursor: pointer;
+            transition: all 0.15s;
+            user-select: none;
+            font-family: var(--mono);
+            font-size: 0.82rem;
+            font-weight: 400;
+            color: var(--fog);
+        }
+        .pill-item:hover {
+            border-color: var(--accent);
+            background: var(--accent-soft);
+        }
+        .pill-item input { display: none; }
+        .pill-item:has(input:checked) {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: var(--paper);
+            font-weight: 500;
+        }
+
+        /* Submit */
+        .submit-section {
+            text-align: center;
+            padding: 3rem 0 0;
+        }
+        .btn-submit {
+            display: inline-block;
+            font-family: var(--mono);
+            font-size: 0.78rem;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--paper);
+            background: var(--accent);
+            border: none;
+            padding: 1.2rem 4rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-submit:hover { background: var(--accent-hover); transform: translateY(-2px); }
+
+        .submit-note {
+            font-family: var(--mono);
+            font-size: 0.72rem;
+            color: var(--fog);
+            margin-top: 1.2rem;
+        }
+        .submit-note::before { content: '// '; color: var(--accent); }
+
+        /* Confirmation */
+        .confirmation {
+            display: none;
+            text-align: center;
+            padding: 8rem 2rem;
+            min-height: 60vh;
+        }
+        .confirmation.show { display: block; }
+
+        .confirm-cmd {
+            font-family: var(--mono);
+            font-size: 0.85rem;
+            color: var(--accent);
+            margin-bottom: 2rem;
+            font-weight: 500;
+        }
+        .confirm-cmd .mute { color: var(--fog); }
+
+        .confirm-heading {
+            font-weight: 500;
+            font-size: 2.5rem;
+            letter-spacing: -0.025em;
+            margin-bottom: 1rem;
+            color: var(--ink);
+        }
+
+        .confirm-text {
+            color: var(--fog);
+            font-size: 1.05rem;
+            line-height: 1.6;
+            max-width: 420px;
+            margin: 0 auto 2.5rem;
+        }
+
+        .confirm-back {
+            font-family: var(--mono);
+            font-size: 0.75rem;
+            color: var(--accent);
+            text-decoration: none;
+            letter-spacing: 0.04em;
+            transition: color 0.2s;
+        }
+        .confirm-back:hover { color: var(--accent-hover); }
+        .confirm-back::before { content: '← '; }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            header { padding: 4rem 1.5rem 3rem; }
+            .form-wrapper { padding: 0 1.5rem 5rem; }
+            .field-row { grid-template-columns: 1fr; }
+            .check-grid { grid-template-columns: 1fr; }
+            .check-grid-3 { grid-template-columns: 1fr 1fr; }
+            .pill-row { flex-wrap: wrap; }
+            .pill-item { flex: none; width: calc(50% - 0.2rem); }
+            nav { padding: 1rem 1.25rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="nav-mark">
+            <span class="bracket">[</span>
+            <span class="dot"></span>
+            &nbsp;CURIOSITY.AI / CLUB
+            <span class="bracket">]</span>
+        </div>
+        <a href="index.html" class="back-link">back</a>
+    </nav>
+
+    <header>
+        <div class="header-cmd"><span class="mute">$</span> apply --express-interest</div>
+        <h1>Express your <span class="accent">interest</span>.</h1>
+        <p>We ask a few questions. There are no right answers &mdash; just honest ones.</p>
+    </header>
+
+    <div class="form-wrapper" id="applicationForm">
+
+        <!-- SECTION 1: WHO YOU ARE -->
+        <div class="form-section">
+            <div class="section-cmd"><span class="mute">$</span> who_are_you</div>
+            <h2 class="section-title">Who you are.</h2>
+            <p class="section-desc">The basics. Nothing complicated.</p>
+
+            <div class="field-row">
+                <div class="field">
+                    <label class="field-label">FIRST NAME</label>
+                    <input type="text" class="field-input" placeholder="First name">
+                </div>
+                <div class="field">
+                    <label class="field-label">LAST NAME</label>
+                    <input type="text" class="field-input" placeholder="Last name">
+                </div>
+            </div>
+            <div class="field">
+                <label class="field-label">ROLE</label>
+                <input type="text" class="field-input" placeholder="Title and team">
+            </div>
+            <div class="field-row">
+                <div class="field">
+                    <label class="field-label">LINKEDIN <span class="opt">// optional</span></label>
+                    <input type="url" class="field-input" placeholder="linkedin.com/in/...">
+                </div>
+                <div class="field">
+                    <label class="field-label">GITHUB <span class="opt">// if you have one</span></label>
+                    <input type="url" class="field-input" placeholder="github.com/...">
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 2: YOUR TOOLKIT -->
+        <div class="form-section">
+            <div class="section-cmd"><span class="mute">$</span> your_stack</div>
+            <h2 class="section-title">Your toolkit.</h2>
+            <p class="section-desc">Check what you actively use. Helps us understand how you work.</p>
+
+            <div class="field">
+                <label class="field-label" style="margin-bottom: 0.6rem;">AI CODING &amp; BUILDING TOOLS</label>
+                <div class="check-grid">
+                    <label class="check-item"><input type="checkbox"><span class="check-box">x</span><span class="check-text">Claude Code / Claude</span></label>
+                    <label class="check-item"><input type="checkbox"><span class="check-box">x</span><span class="check-text">Cursor</span></label>
+                    <label class="check-item"><input type="checkbox"><span class="check-box">x</span><span class="check-text">GitHub Copilot</span></label>
+                    <label class="check-item"><input type="checkbox"><span class="check-box">x</span><span class="check-text">Windsurf / Codeium</span></label>
+                    <label class="check-item"><input type="checkbox"><span class="check-box">x</span><span class="check-text">Aider / Cline / Roo</span></label>
+                    <label class="check-item"><input type="checkbox"><span class="check-box">x</span><span class="check-text">Bolt / Lovable / v0</span></label>
+                    <label class="check-item"><input type="checkbox"><span class="check-box">x</span><span class="check-text">Replit Agent</span></label>
+                    <label class="check-item"><input type="checkbox"><span class="check-box">x</span><span class="check-text">Ollama / LM Studio</span></label>
+                </div>
+            </div>
+
+            <div class="field">
+                <label class="field-label" style="margin-bottom: 0.6rem;">DEPLOYMENT &amp; INFRASTRUCTURE</label>
+                <div class="check-grid check-grid-3">
+                    <label class="check-item"><input type="checkbox"><span class="check-box">x</span><span class="check-text">Vercel</span></label>
+                    <label class="check-item"><input type="checkbox"><span class="check-box">x</span><span class="check-text">Railway</span></label>
+                    <label class="check-item"><input type="checkbox"><span class="check-box">x</span><span class="check-text">AWS / GCP / Azure</span></label>
+                    <label class="check-item"><input type="checkbox"><span class="check-box">x</span><span class="check-text">Supabase</span></label>
+                    <label class="check-item"><input type="checkbox"><span class="check-box">x</span><span class="check-text">Docker</span></label>
+                </div>
+            </div>
+
+            <div class="field">
+                <label class="field-label">OTHER PLATFORMS OR TOOLS <span class="opt">// if not listed above</span></label>
+                <input type="text" class="field-input" placeholder="e.g. Netlify, Fly.io, Cloudflare Workers, Heroku...">
+            </div>
+
+            <div class="field">
+                <label class="field-label">HARDWARE</label>
+                <input type="text" class="field-input" placeholder="e.g. Mac Mini M4 Pro 64GB, MacBook Air M3, custom Linux box...">
+            </div>
+
+            <div class="field">
+                <label class="field-label">ANYTHING ELSE IN YOUR STACK <span class="opt">// optional</span></label>
+                <input type="text" class="field-input" placeholder="e.g. LangChain, CrewAI, pgvector, custom pipelines, MCP servers...">
+                <p class="field-hint">For the things that don't fit a checkbox.</p>
+            </div>
+        </div>
+
+        <!-- SECTION 3: WHAT YOU'VE BUILT -->
+        <div class="form-section">
+            <div class="section-cmd"><span class="mute">$</span> what_youve_shipped</div>
+            <h2 class="section-title">What you've built.</h2>
+            <p class="section-desc">Not what you&rsquo;ve used &mdash; what you&rsquo;ve made. This is the part that matters most.</p>
+
+            <div class="field">
+                <label class="field-label">DESCRIBE YOUR BEST AI PROJECT</label>
+                <textarea class="field-textarea" placeholder="What is it? What problem does it solve? Who uses it? Be specific — &quot;I built an agent that books travel for my family&quot; beats &quot;I work with AI tools.&quot;"></textarea>
+            </div>
+
+            <div class="field">
+                <label class="field-label">LINK TO THE PROJECT <span class="opt">// GitHub, live URL, or demo video</span></label>
+                <input type="url" class="field-input" placeholder="e.g. github.com/you/project or myapp.vercel.app">
+            </div>
+
+            <div class="field">
+                <label class="field-label">OR UPLOAD A SCREENSHOT / DEMO</label>
+                <input type="file" class="field-file" accept="image/*,.pdf,.mp4" multiple>
+                <p class="field-hint">If you'd rather show than link. Images, PDFs, or short videos.</p>
+            </div>
+
+            <div class="field">
+                <label class="field-label">HOW MANY PROJECTS HAVE YOU SHIPPED IN THE LAST 6 MONTHS?</label>
+                <p class="field-sublabel">Shipped = something someone else can use or see. Prototypes count.</p>
+                <div class="pill-row">
+                    <label class="pill-item"><input type="radio" name="projects">1</label>
+                    <label class="pill-item"><input type="radio" name="projects">2&ndash;3</label>
+                    <label class="pill-item"><input type="radio" name="projects">4&ndash;6</label>
+                    <label class="pill-item"><input type="radio" name="projects">7+</label>
+                </div>
+            </div>
+
+            <div class="field">
+                <label class="field-label">HOW MANY HOURS A WEEK DO YOU BUILD WITH AI, OUTSIDE OF WORK?</label>
+                <p class="field-sublabel">Weekends, evenings, early mornings &mdash; however you find the time.</p>
+                <div class="pill-row">
+                    <label class="pill-item"><input type="radio" name="hours">1&ndash;3</label>
+                    <label class="pill-item"><input type="radio" name="hours">4&ndash;8</label>
+                    <label class="pill-item"><input type="radio" name="hours">9&ndash;15</label>
+                    <label class="pill-item"><input type="radio" name="hours">16+</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 4: HOW YOU THINK -->
+        <div class="form-section">
+            <div class="section-cmd"><span class="mute">$</span> how_you_think</div>
+            <h2 class="section-title">How you think.</h2>
+            <p class="section-desc">Honesty over polish. How you handle frustration tells us more than any success story.</p>
+
+            <div class="field">
+                <label class="field-label">MOST FRUSTRATED YOU'VE BEEN WITH AI &mdash; AND WHAT YOU DID</label>
+                <textarea class="field-textarea" placeholder="The hallucination that wasted four hours. The agent that looped until 2am. The prototype that broke on demo day. What happened, and how did you push through?"></textarea>
+                <p class="field-hint">This tells us more about you than any success story.</p>
+            </div>
+
+            <div class="field">
+                <label class="field-label">A REAL PROBLEM YOU'VE SOLVED (OR ARE SOLVING)</label>
+                <textarea class="field-textarea" placeholder="Not &quot;I built a chatbot&quot; — but &quot;I built X because Y was costing us Z.&quot;"></textarea>
+            </div>
+
+            <div class="field">
+                <label class="field-label">WHAT YOU'RE STRUGGLING WITH RIGHT NOW</label>
+                <textarea class="field-textarea" placeholder="The thing you can't figure out. The problem you'd bring to a room of ten smart people."></textarea>
+            </div>
+        </div>
+
+        <!-- SECTION 5: WHAT YOU BRING -->
+        <div class="form-section">
+            <div class="section-cmd"><span class="mute">$</span> what_you_bring</div>
+            <h2 class="section-title">What you bring.</h2>
+            <p class="section-desc">Not what you want to get &mdash; what you want to give.</p>
+
+            <div class="field">
+                <label class="field-label">IF YOU HAD 10 MINUTES AT YOUR FIRST SESSION, WHAT WOULD YOU DEMO?</label>
+                <textarea class="field-textarea" style="min-height: 90px;" placeholder="A project, a workflow, a lesson learned, a spectacular failure?"></textarea>
+            </div>
+
+            <div class="field">
+                <label class="field-label">DOMAIN EXPERTISE YOU BRING THAT MOST AI BUILDERS DON'T HAVE</label>
+                <input type="text" class="field-input" placeholder="e.g. private banking, healthcare regulation, supply chain, design...">
+            </div>
+        </div>
+
+        <!-- SUBMIT -->
+        <div class="submit-section">
+            <button class="btn-submit" onclick="submitApplication()">Submit / Express Interest</button>
+            <p class="submit-note">We review applications weekly. Expect to hear within five days.</p>
+        </div>
+    </div>
+
+    <!-- CONFIRMATION -->
+    <div class="confirmation" id="confirmPage">
+        <div class="confirm-cmd"><span class="mute">$</span> interest.submitted &nbsp;<span style="color: var(--accent);">&#10003; OK</span></div>
+        <h2 class="confirm-heading">Thank you.</h2>
+        <p class="confirm-text">We&rsquo;ve received your application.<br>We review weekly &mdash; expect to hear from us within five days.</p>
+        <a href="index.html" class="confirm-back">back to The Curiosity AI Club</a>
+    </div>
+
+    <script>
+        function submitApplication() {
+            document.getElementById('applicationForm').style.display = 'none';
+            document.querySelector('header').style.display = 'none';
+            document.getElementById('confirmPage').classList.add('show');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+
+</body>
+</html>
