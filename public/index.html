@@ -581,14 +581,39 @@
             border-bottom: 1px solid var(--line-paper);
         }
         .traits li .box { color: var(--accent); font-weight: 600; font-size: 0.85rem; flex-shrink: 0; }
-        .shared-manifesto {
+        .shared-block {
+            background-color: #14251B;
+            padding: 2.5rem 3rem;
+            margin-top: 2rem;
+        }
+        .shared-label {
+            font-family: var(--mono);
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+        .shared-list {
+            list-style: none;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem 3rem;
+        }
+        .shared-list li {
             font-family: var(--sans);
-            font-size: 1.1rem;
-            line-height: 1.8;
-            color: var(--ink);
-            max-width: 640px;
-            margin: 1.5rem auto 0;
-            text-align: center;
+            font-size: 0.95rem;
+            color: #F2EDE0;
+            padding-left: 1.2rem;
+            position: relative;
+            line-height: 1.5;
+        }
+        .shared-list li::before {
+            content: '\2022';
+            color: var(--accent);
+            position: absolute;
+            left: 0;
+            font-weight: bold;
         }
 
         /* ─── FORMAT ─── */
@@ -798,7 +823,8 @@
             .format-card:last-child { border-bottom: none; }
             .cycle-row { grid-template-columns: 50px 1fr; gap: 1rem; }
             .cycle-row .cycle-desc { grid-column: 1 / -1; margin-top: 0.3rem; }
-            .traits { grid-template-columns: 1fr; }
+            .shared-list { grid-template-columns: 1fr; }
+            .shared-block { padding: 2rem 1.5rem; }
             .apply-head { grid-template-columns: 1fr; gap: 2rem; }
             .footer-inner { grid-template-columns: 1fr; gap: 2rem; }
             .footer-bottom { flex-direction: column; gap: 1rem; text-align: center; }
@@ -970,12 +996,19 @@
                 </div>
             </div>
 
-            <div class="traits-head fade-up">
-                <span class="line"></span>
-                <span class="label">WHAT WE ALL SHARE</span>
-                <span class="line"></span>
+            <div class="shared-block fade-up">
+                <div class="shared-label">WHAT WE ALL SHARE</div>
+                <ul class="shared-list">
+                    <li>We ship URLs, not screenshots of chat</li>
+                    <li>We build agents and workflows, not just prompts</li>
+                    <li>We compose multiple tools, not one chatbot</li>
+                    <li>We manage state &mdash; databases, hosting, version control</li>
+                    <li>We build rapid prototypes, not slide decks</li>
+                    <li>We&rsquo;ve solved real problems, not hypothetical ones</li>
+                    <li>We version and iterate</li>
+                    <li>We have a GitHub repo we&rsquo;d be happy to share</li>
+                </ul>
             </div>
-            <p class="shared-manifesto fade-up">We ship URLs, not screenshots of chat. We build agents and workflows, not just prompts. We compose multiple tools, not one chatbot. We manage state &mdash; databases, hosting, version control. We build rapid prototypes, not slide decks. We&rsquo;ve solved real problems, not hypothetical ones. We version and iterate. And we have a GitHub repo we&rsquo;d be happy to share.</p>
         </div>
     </section>
 
