@@ -23,7 +23,7 @@ const NOTIFY_EMAILS = process.env.NOTIFY_EMAILS || '';
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser(COOKIE_SECRET));
-app.use(express.static('public'));
+app.use(express.static('public', { extensions: ['html'] }));
 
 const storage = multer.diskStorage({
     destination: UPLOADS_DIR,
