@@ -191,6 +191,7 @@
             <span class="bracket">[</span> CURIOSITY.AI / ADMIN <span class="bracket">]</span>
         </div>
         <div class="dash-nav-right">
+            <button class="logout-btn" onclick="exportCSV()" style="border-color: var(--accent); color: var(--accent);">export CSV</button>
             <a href="index.html">← site</a>
             <button class="logout-btn" onclick="logout()">logout</button>
         </div>
@@ -303,10 +304,10 @@ function renderList() {
 function renderDetail(app) {
     let html = '<div class="detail-grid">';
 
+    if (app.email) html += section('EMAIL', `<a href="mailto:${esc(app.email)}">${esc(app.email)}</a>`);
     html += section('LINKS',
-        (app.linkedin ? `<a href="${esc(app.linkedin)}" target="_blank">LinkedIn</a>` : '') +
-        (app.github ? ` · <a href="${esc(app.github)}" target="_blank">GitHub</a>` : '') +
-        (app.project_link ? ` · <a href="${esc(app.project_link)}" target="_blank">Project</a>` : '')
+        (app.github ? `<a href="${esc(app.github)}" target="_blank">GitHub</a>` : '') +
+        (app.project_link ? ` · <a href="${esc(app.project_link)}" target="_blank">Project</a>` : '') || '—'
     );
 
     html += section('AI TOOLS', app.ai_tools?.length ? chips(app.ai_tools) : '—');
@@ -371,6 +372,24 @@ async function saveNotes(id, notes) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ notes })
     });
+}
+
+function exportCSV() {
+    if (!allApps.length) return;
+    const fields = ['first_name','last_name','email','role','status','submitted_at','github','ai_tools','deployment','other_platforms','hardware','stack_extras','project_description','project_link','projects_shipped','hours_per_week','frustration_story','business_problem','current_struggle','demo_pitch','domain_expertise','notes'];
+    const csvEsc = v => { const s = String(v ?? ''); return s.includes(',') || s.includes('"') || s.includes('\n') ? '"' + s.replace(/"/g, '""') + '"' : s; };
+    const rows = [fields.join(',')];
+    allApps.forEach(app => {
+        rows.push(fields.map(f => {
+            const val = app[f];
+            return csvEsc(Array.isArray(val) ? val.join('; ') : val);
+        }).join(','));
+    });
+    const blob = new Blob([rows.join('\n')], { type: 'text/csv' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'curiosity-ai-club-applications.csv';
+    a.click();
 }
 
 function esc(str) {

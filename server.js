@@ -66,7 +66,7 @@ app.post('/api/apply', upload.array('screenshots', 5), (req, res) => {
         first_name: req.body.first_name || '',
         last_name: req.body.last_name || '',
         role: req.body.role || '',
-        linkedin: req.body.linkedin || '',
+        email: req.body.email || '',
         github: req.body.github || '',
         ai_tools: [].concat(req.body.ai_tools || []),
         deployment: [].concat(req.body.deployment || []),
