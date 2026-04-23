@@ -3,9 +3,12 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "npx serve public -s -l tcp://0.0.0.0:${PORT:-3000}"
+    "start": "node server.js"
   },
   "dependencies": {
-    "serve": "^14.2.4"
+    "express": "^4.21.0",
+    "multer": "^1.4.5-lts.1",
+    "cookie-parser": "^1.4.6",
+    "nodemailer": "^6.9.0"
   }
 }

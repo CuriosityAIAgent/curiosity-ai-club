@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin — The Curiosity AI Club</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --paper: #F2EDE0; --paper-soft: #E8E2CE; --paper-deep: #DBD1B7;
+            --deep: #14251B; --ink: #0F1410; --ink-2: #222821;
+            --accent: #2F5B3E; --accent-hover: #3E6F4E; --accent-soft: rgba(47,91,62,0.08);
+            --brass: #C9A15B; --fog: #4B4A3F; --fog-2: #7E7C70;
+            --line-paper: rgba(26,32,22,0.10);
+            --sans: 'Inter', -apple-system, system-ui, sans-serif;
+            --mono: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+            --status-new: #2F5B3E; --status-reviewed: #C9A15B;
+            --status-accepted: #2d7a4f; --status-rejected: #8b3a3a;
+        }
+        html { -webkit-font-smoothing: antialiased; }
+        body { font-family: var(--sans); background: var(--paper); color: var(--ink); font-size: 15px; line-height: 1.5; }
+        ::selection { background: var(--accent); color: var(--paper); }
+
+        /* ── Login ── */
+        .login-wrap {
+            min-height: 100vh; display: flex; align-items: center; justify-content: center;
+            background: var(--paper);
+        }
+        .login-box {
+            width: 380px; padding: 3rem; background: var(--paper-soft); border: 1px solid var(--line-paper);
+        }
+        .login-tag { font-family: var(--mono); font-size: 0.72rem; color: var(--accent); margin-bottom: 1.5rem; font-weight: 500; }
+        .login-tag::before { content: '// '; color: var(--fog-2); }
+        .login-title { font-weight: 500; font-size: 1.6rem; letter-spacing: -0.02em; margin-bottom: 2rem; }
+        .login-field { margin-bottom: 1.2rem; }
+        .login-label { display: block; font-family: var(--mono); font-size: 0.7rem; color: var(--fog); letter-spacing: 0.06em; margin-bottom: 0.4rem; font-weight: 500; }
+        .login-input {
+            width: 100%; background: var(--paper); border: 1px solid var(--line-paper); padding: 0.75rem 1rem;
+            font-family: var(--mono); font-size: 0.9rem; color: var(--ink); outline: none; transition: border-color 0.2s;
+        }
+        .login-input:focus { border-color: var(--accent); }
+        .login-btn {
+            width: 100%; margin-top: 1rem; padding: 0.9rem; font-family: var(--mono); font-size: 0.78rem;
+            font-weight: 500; letter-spacing: 0.08em; color: var(--paper); background: var(--accent);
+            border: none; cursor: pointer; transition: background 0.2s;
+        }
+        .login-btn:hover { background: var(--accent-hover); }
+        .login-error { font-family: var(--mono); font-size: 0.75rem; color: var(--status-rejected); margin-top: 1rem; display: none; }
+
+        /* ── Dashboard ── */
+        .dash { display: none; }
+        .dash.active { display: block; }
+
+        .dash-nav {
+            position: sticky; top: 0; z-index: 50; padding: 1rem 2rem; background: rgba(242,237,224,0.92);
+            backdrop-filter: blur(16px); border-bottom: 1px solid var(--line-paper);
+            display: flex; justify-content: space-between; align-items: center; font-family: var(--mono); font-size: 0.72rem;
+        }
+        .dash-nav-mark { font-weight: 500; color: var(--ink); display: flex; align-items: center; gap: 0.4rem; }
+        .dash-nav-mark .bracket { color: var(--accent); }
+        .dash-nav-right { display: flex; align-items: center; gap: 1.5rem; }
+        .dash-nav-right a { color: var(--fog); text-decoration: none; transition: color 0.2s; }
+        .dash-nav-right a:hover { color: var(--ink); }
+        .logout-btn {
+            font-family: var(--mono); font-size: 0.72rem; color: var(--fog); background: none;
+            border: 1px solid var(--line-paper); padding: 0.4rem 0.8rem; cursor: pointer; transition: all 0.2s;
+        }
+        .logout-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+        .dash-inner { max-width: 1100px; margin: 0 auto; padding: 2rem; }
+
+        /* Stats */
+        .stats-bar {
+            display: grid; grid-template-columns: repeat(5, 1fr); gap: 1px; background: var(--line-paper);
+            margin-bottom: 2.5rem; border: 1px solid var(--line-paper);
+        }
+        .stat {
+            background: var(--paper); padding: 1.5rem; text-align: center; cursor: pointer; transition: background 0.2s;
+        }
+        .stat:hover, .stat.active { background: var(--accent-soft); }
+        .stat-num { font-weight: 600; font-size: 2rem; letter-spacing: -0.03em; color: var(--ink); margin-bottom: 0.2rem; }
+        .stat-label { font-family: var(--mono); font-size: 0.68rem; color: var(--fog); letter-spacing: 0.08em; text-transform: uppercase; font-weight: 500; }
+        .stat[data-filter="new"] .stat-num { color: var(--status-new); }
+        .stat[data-filter="reviewed"] .stat-num { color: var(--status-reviewed); }
+        .stat[data-filter="accepted"] .stat-num { color: var(--status-accepted); }
+        .stat[data-filter="rejected"] .stat-num { color: var(--status-rejected); }
+
+        /* Application cards */
+        .app-list { display: flex; flex-direction: column; gap: 0.5rem; }
+        .app-card {
+            background: var(--paper-soft); border: 1px solid var(--line-paper); padding: 1.2rem 1.5rem;
+            cursor: pointer; transition: all 0.2s; position: relative;
+        }
+        .app-card:hover { background: var(--accent-soft); border-color: var(--accent); }
+        .app-card-header { display: flex; justify-content: space-between; align-items: center; }
+        .app-card-name { font-weight: 500; font-size: 1.05rem; }
+        .app-card-role { font-size: 0.88rem; color: var(--fog); margin-top: 0.2rem; }
+        .app-card-meta { font-family: var(--mono); font-size: 0.7rem; color: var(--fog-2); margin-top: 0.3rem; }
+        .app-badge {
+            font-family: var(--mono); font-size: 0.65rem; font-weight: 500; letter-spacing: 0.06em;
+            text-transform: uppercase; padding: 0.3rem 0.6rem; border-radius: 2px;
+        }
+        .app-badge.new { background: rgba(47,91,62,0.12); color: var(--status-new); }
+        .app-badge.reviewed { background: rgba(201,161,91,0.15); color: #8a6d2f; }
+        .app-badge.accepted { background: rgba(45,122,79,0.12); color: var(--status-accepted); }
+        .app-badge.rejected { background: rgba(139,58,58,0.12); color: var(--status-rejected); }
+
+        /* Expanded detail */
+        .app-detail { display: none; margin-top: 1.2rem; padding-top: 1.2rem; border-top: 1px solid var(--line-paper); }
+        .app-card.expanded .app-detail { display: block; }
+
+        .detail-section { margin-bottom: 1.5rem; }
+        .detail-label { font-family: var(--mono); font-size: 0.68rem; color: var(--accent); letter-spacing: 0.06em; font-weight: 500; margin-bottom: 0.4rem; }
+        .detail-label::before { content: '// '; color: var(--fog-2); }
+        .detail-value { font-size: 0.92rem; color: var(--ink); line-height: 1.6; white-space: pre-wrap; }
+        .detail-value a { color: var(--accent); }
+        .detail-chips { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.3rem; }
+        .detail-chip {
+            font-family: var(--mono); font-size: 0.72rem; padding: 0.3rem 0.6rem;
+            background: var(--paper); border: 1px solid var(--line-paper); color: var(--fog);
+        }
+        .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .detail-screenshots { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.3rem; }
+        .detail-screenshots img { width: 120px; height: 80px; object-fit: cover; border: 1px solid var(--line-paper); cursor: pointer; }
+
+        /* Actions */
+        .app-actions {
+            display: flex; gap: 0.5rem; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--line-paper);
+            flex-wrap: wrap; align-items: center;
+        }
+        .action-btn {
+            font-family: var(--mono); font-size: 0.72rem; font-weight: 500; letter-spacing: 0.04em;
+            padding: 0.5rem 1rem; border: 1px solid var(--line-paper); background: var(--paper);
+            color: var(--fog); cursor: pointer; transition: all 0.15s;
+        }
+        .action-btn:hover { border-color: var(--accent); color: var(--accent); }
+        .action-btn.accept { border-color: var(--status-accepted); color: var(--status-accepted); }
+        .action-btn.accept:hover { background: var(--status-accepted); color: var(--paper); }
+        .action-btn.reject { border-color: var(--status-rejected); color: var(--status-rejected); }
+        .action-btn.reject:hover { background: var(--status-rejected); color: var(--paper); }
+
+        .notes-area {
+            flex: 1; min-width: 200px; font-family: var(--mono); font-size: 0.82rem; padding: 0.5rem 0.8rem;
+            border: 1px solid var(--line-paper); background: var(--paper); color: var(--ink); outline: none;
+            resize: none; height: 36px; transition: border-color 0.2s;
+        }
+        .notes-area:focus { border-color: var(--accent); }
+        .notes-area::placeholder { color: var(--fog-2); }
+
+        .empty-state {
+            text-align: center; padding: 4rem 2rem; color: var(--fog);
+            font-family: var(--mono); font-size: 0.85rem;
+        }
+
+        @media (max-width: 768px) {
+            .stats-bar { grid-template-columns: repeat(3, 1fr); }
+            .detail-grid { grid-template-columns: 1fr; }
+            .dash-inner { padding: 1rem; }
+            .app-actions { flex-direction: column; }
+            .notes-area { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-wrap" id="loginScreen">
+    <div class="login-box">
+        <div class="login-tag">ADMIN</div>
+        <h1 class="login-title">Curiosity AI Club</h1>
+        <div class="login-field">
+            <label class="login-label">USERNAME</label>
+            <input type="text" class="login-input" id="loginUser" placeholder="username" autocomplete="username">
+        </div>
+        <div class="login-field">
+            <label class="login-label">PASSWORD</label>
+            <input type="password" class="login-input" id="loginPass" placeholder="password" autocomplete="current-password">
+        </div>
+        <button class="login-btn" onclick="login()">LOGIN</button>
+        <div class="login-error" id="loginError">Invalid credentials. Try again.</div>
+    </div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="dash" id="dashboard">
+    <nav class="dash-nav">
+        <div class="dash-nav-mark">
+            <span class="bracket">[</span> CURIOSITY.AI / ADMIN <span class="bracket">]</span>
+        </div>
+        <div class="dash-nav-right">
+            <a href="index.html">← site</a>
+            <button class="logout-btn" onclick="logout()">logout</button>
+        </div>
+    </nav>
+
+    <div class="dash-inner">
+        <div class="stats-bar" id="statsBar"></div>
+        <div class="app-list" id="appList"></div>
+    </div>
+</div>
+
+<script>
+let allApps = [];
+let currentFilter = 'all';
+
+async function checkAuth() {
+    try {
+        const res = await fetch('/api/admin/check');
+        if (res.ok) { showDashboard(); return; }
+    } catch {}
+    document.getElementById('loginScreen').style.display = 'flex';
+}
+
+async function login() {
+    const username = document.getElementById('loginUser').value;
+    const password = document.getElementById('loginPass').value;
+    const res = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+    });
+    if (res.ok) {
+        document.getElementById('loginError').style.display = 'none';
+        showDashboard();
+    } else {
+        document.getElementById('loginError').style.display = 'block';
+    }
+}
+
+document.getElementById('loginPass').addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
+
+async function logout() {
+    await fetch('/api/admin/logout', { method: 'POST' });
+    document.getElementById('dashboard').classList.remove('active');
+    document.getElementById('loginScreen').style.display = 'flex';
+}
+
+async function showDashboard() {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('dashboard').classList.add('active');
+    await loadApplications();
+}
+
+async function loadApplications() {
+    const res = await fetch('/api/admin/applications');
+    allApps = await res.json();
+    renderStats();
+    renderList();
+}
+
+function renderStats() {
+    const counts = { all: allApps.length, new: 0, reviewed: 0, accepted: 0, rejected: 0 };
+    allApps.forEach(a => { if (counts[a.status] !== undefined) counts[a.status]++; });
+
+    const bar = document.getElementById('statsBar');
+    bar.innerHTML = ['all', 'new', 'reviewed', 'accepted', 'rejected'].map(key =>
+        `<div class="stat ${currentFilter === key ? 'active' : ''}" data-filter="${key}" onclick="setFilter('${key}')">
+            <div class="stat-num">${counts[key]}</div>
+            <div class="stat-label">${key}</div>
+        </div>`
+    ).join('');
+}
+
+function setFilter(filter) {
+    currentFilter = filter;
+    renderStats();
+    renderList();
+}
+
+function renderList() {
+    const filtered = currentFilter === 'all' ? allApps : allApps.filter(a => a.status === currentFilter);
+    const list = document.getElementById('appList');
+
+    if (filtered.length === 0) {
+        list.innerHTML = '<div class="empty-state">// no applications found</div>';
+        return;
+    }
+
+    list.innerHTML = filtered.map(app => `
+        <div class="app-card" id="card-${app.id}" onclick="toggleCard('${app.id}')">
+            <div class="app-card-header">
+                <div>
+                    <div class="app-card-name">${esc(app.first_name)} ${esc(app.last_name)}</div>
+                    <div class="app-card-role">${esc(app.role)}</div>
+                    <div class="app-card-meta">
+                        ${new Date(app.submitted_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                        ${app.projects_shipped ? ' · ' + app.projects_shipped + ' projects' : ''}
+                        ${app.hours_per_week ? ' · ' + app.hours_per_week + ' hrs/wk' : ''}
+                    </div>
+                </div>
+                <span class="app-badge ${app.status}">${app.status}</span>
+            </div>
+            <div class="app-detail">
+                ${renderDetail(app)}
+            </div>
+        </div>
+    `).join('');
+}
+
+function renderDetail(app) {
+    let html = '<div class="detail-grid">';
+
+    html += section('LINKS',
+        (app.linkedin ? `<a href="${esc(app.linkedin)}" target="_blank">LinkedIn</a>` : '') +
+        (app.github ? ` · <a href="${esc(app.github)}" target="_blank">GitHub</a>` : '') +
+        (app.project_link ? ` · <a href="${esc(app.project_link)}" target="_blank">Project</a>` : '')
+    );
+
+    html += section('AI TOOLS', app.ai_tools?.length ? chips(app.ai_tools) : '—');
+    html += section('DEPLOYMENT', app.deployment?.length ? chips(app.deployment) : '—');
+
+    if (app.other_platforms) html += section('OTHER PLATFORMS', esc(app.other_platforms));
+    if (app.hardware) html += section('HARDWARE', esc(app.hardware));
+    if (app.stack_extras) html += section('STACK EXTRAS', esc(app.stack_extras));
+
+    html += '</div>';
+
+    if (app.project_description) html += section('PROJECT DESCRIPTION', esc(app.project_description));
+
+    if (app.screenshots?.length) {
+        html += `<div class="detail-section"><div class="detail-label">SCREENSHOTS</div><div class="detail-screenshots">`;
+        app.screenshots.forEach(f => { html += `<img src="/api/admin/uploads/${esc(f)}" onclick="event.stopPropagation(); window.open(this.src)">`; });
+        html += '</div></div>';
+    }
+
+    if (app.frustration_story) html += section('FRUSTRATION STORY', esc(app.frustration_story));
+    if (app.business_problem) html += section('BUSINESS PROBLEM', esc(app.business_problem));
+    if (app.current_struggle) html += section('CURRENT STRUGGLE', esc(app.current_struggle));
+    if (app.demo_pitch) html += section('WHAT THEY\'D DEMO', esc(app.demo_pitch));
+    if (app.domain_expertise) html += section('DOMAIN EXPERTISE', esc(app.domain_expertise));
+
+    html += `
+        <div class="app-actions" onclick="event.stopPropagation()">
+            <button class="action-btn" onclick="setStatus('${app.id}','reviewed')">Mark Reviewed</button>
+            <button class="action-btn accept" onclick="setStatus('${app.id}','accepted')">Accept</button>
+            <button class="action-btn reject" onclick="setStatus('${app.id}','rejected')">Reject</button>
+            <textarea class="notes-area" placeholder="// add notes..." onblur="saveNotes('${app.id}', this.value)">${esc(app.notes || '')}</textarea>
+        </div>`;
+
+    return html;
+}
+
+function section(label, value) {
+    return `<div class="detail-section"><div class="detail-label">${label}</div><div class="detail-value">${value}</div></div>`;
+}
+
+function chips(arr) {
+    return '<div class="detail-chips">' + arr.map(c => `<span class="detail-chip">${esc(c)}</span>`).join('') + '</div>';
+}
+
+function toggleCard(id) {
+    const card = document.getElementById('card-' + id);
+    card.classList.toggle('expanded');
+}
+
+async function setStatus(id, status) {
+    await fetch('/api/admin/applications/' + id, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status })
+    });
+    await loadApplications();
+}
+
+async function saveNotes(id, notes) {
+    await fetch('/api/admin/applications/' + id, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ notes })
+    });
+}
+
+function esc(str) {
+    if (!str) return '';
+    const d = document.createElement('div');
+    d.textContent = str;
+    return d.innerHTML;
+}
+
+checkAuth();
+</script>
+
+</body>
+</html>
