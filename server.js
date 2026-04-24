@@ -56,7 +56,15 @@ function authMiddleware(req, res, next) {
 }
 
 // ── Submit application ──
-app.post('/api/apply', upload.array('screenshots', 5), (req, res) => {
+app.post('/api/apply', (req, res, next) => {
+    upload.array('screenshots', 5)(req, res, (err) => {
+        if (err) {
+            if (err.code === 'LIMIT_FILE_SIZE') return res.status(400).json({ error: 'File too large. Maximum 10 MB per file.' });
+            return res.status(400).json({ error: 'Upload failed. Please try again.' });
+        }
+        next();
+    });
+}, (req, res) => {
     const applications = readDB();
 
     const application = {

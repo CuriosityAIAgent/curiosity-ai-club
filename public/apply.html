@@ -31,6 +31,7 @@
         }
 
         html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+        input, textarea, select, button { font-family: inherit; }
 
         body {
             background: var(--paper);
@@ -581,8 +582,8 @@
 
             <div class="field">
                 <label class="field-label">OR UPLOAD A SCREENSHOT / DEMO <span class="opt">// optional</span></label>
-                <input type="file" name="screenshots" class="field-file" accept="image/*,.pdf,.mp4" multiple>
-                <p class="field-hint">If you'd rather show than link. Images, PDFs, or short videos.</p>
+                <input type="file" name="screenshots" class="field-file" accept="image/*,.pdf" multiple>
+                <p class="field-hint">Images or PDFs, up to 10 MB each. You can select multiple files.</p>
             </div>
 
             <div class="field">
@@ -706,7 +707,7 @@
             const form = document.getElementById('applicationForm');
             const formData = new FormData();
 
-            form.querySelectorAll('input[type="text"], input[type="url"]').forEach(el => {
+            form.querySelectorAll('input[type="text"], input[type="url"], input[type="email"]').forEach(el => {
                 if (el.name && el.value) formData.append(el.name, el.value);
             });
             form.querySelectorAll('textarea').forEach(el => {
@@ -720,12 +721,22 @@
             });
             const fileInput = form.querySelector('input[type="file"]');
             if (fileInput && fileInput.files.length > 0) {
-                for (const file of fileInput.files) formData.append('screenshots', file);
+                for (const file of fileInput.files) {
+                    if (file.size > 10 * 1024 * 1024) {
+                        alert(`File "${file.name}" is too large (max 10 MB). Please choose a smaller file.`);
+                        return;
+                    }
+                    formData.append('screenshots', file);
+                }
             }
 
             try {
                 const res = await fetch('/api/apply', { method: 'POST', body: formData });
                 const data = await res.json();
+                if (!res.ok) {
+                    alert(data.error || 'Something went wrong. Please try again.');
+                    return;
+                }
                 if (data.success) {
                     form.style.display = 'none';
                     document.querySelector('header').style.display = 'none';
