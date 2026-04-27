@@ -147,6 +147,15 @@ app.patch('/api/admin/applications/:id', authMiddleware, (req, res) => {
     res.json(applications[idx]);
 });
 
+app.delete('/api/admin/applications/:id', authMiddleware, (req, res) => {
+    const applications = readDB();
+    const idx = applications.findIndex(a => a.id === req.params.id);
+    if (idx === -1) return res.status(404).json({ error: 'Not found' });
+    const [removed] = applications.splice(idx, 1);
+    writeDB(applications);
+    res.json({ success: true, removed: removed.id });
+});
+
 app.get('/api/admin/uploads/:filename', authMiddleware, (req, res) => {
     const safe = path.basename(req.params.filename);
     const filePath = path.join(UPLOADS_DIR, safe);
