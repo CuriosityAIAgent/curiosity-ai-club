@@ -65,43 +65,48 @@ app.post('/api/apply', (req, res, next) => {
         next();
     });
 }, (req, res) => {
-    const applications = readDB();
+    try {
+        const applications = readDB();
 
-    const application = {
-        id: `app_${Date.now()}_${crypto.randomBytes(3).toString('hex')}`,
-        submitted_at: new Date().toISOString(),
-        status: 'new',
-        first_name: req.body.first_name || '',
-        last_name: req.body.last_name || '',
-        role: req.body.role || '',
-        email: req.body.email || '',
-        github: req.body.github || '',
-        ai_tools: [].concat(req.body.ai_tools || []),
-        deployment: [].concat(req.body.deployment || []),
-        other_platforms: req.body.other_platforms || '',
-        hardware: req.body.hardware || '',
-        stack_extras: req.body.stack_extras || '',
-        project_description: req.body.project_description || '',
-        project_link: req.body.project_link || '',
-        projects_shipped: req.body.projects_shipped || '',
-        hours_per_week: req.body.hours_per_week || '',
-        screenshots: (req.files || []).map(f => f.filename),
-        frustration_story: req.body.frustration_story || '',
-        business_problem: req.body.business_problem || '',
-        current_struggle: req.body.current_struggle || '',
-        demo_pitch: req.body.demo_pitch || '',
-        domain_expertise: req.body.domain_expertise || '',
-        notes: ''
-    };
+        const application = {
+            id: `app_${Date.now()}_${crypto.randomBytes(3).toString('hex')}`,
+            submitted_at: new Date().toISOString(),
+            status: 'new',
+            first_name: req.body.first_name || '',
+            last_name: req.body.last_name || '',
+            role: req.body.role || '',
+            email: req.body.email || '',
+            github: req.body.github || '',
+            ai_tools: [].concat(req.body.ai_tools || []),
+            deployment: [].concat(req.body.deployment || []),
+            other_platforms: req.body.other_platforms || '',
+            hardware: req.body.hardware || '',
+            stack_extras: req.body.stack_extras || '',
+            project_description: req.body.project_description || '',
+            project_link: req.body.project_link || '',
+            projects_shipped: req.body.projects_shipped || '',
+            hours_per_week: req.body.hours_per_week || '',
+            screenshots: (req.files || []).map(f => f.filename),
+            frustration_story: req.body.frustration_story || '',
+            business_problem: req.body.business_problem || '',
+            current_struggle: req.body.current_struggle || '',
+            demo_pitch: req.body.demo_pitch || '',
+            domain_expertise: req.body.domain_expertise || '',
+            notes: ''
+        };
 
-    applications.push(application);
-    writeDB(applications);
+        applications.push(application);
+        writeDB(applications);
 
-    if (NOTIFY_EMAILS && process.env.SMTP_HOST) {
-        sendNotification(application).catch(err => console.error('Email failed:', err.message));
+        if (NOTIFY_EMAILS && process.env.SMTP_HOST) {
+            sendNotification(application).catch(err => console.error('Email failed:', err.message));
+        }
+
+        res.json({ success: true });
+    } catch (err) {
+        console.error('Application save failed:', err.message);
+        res.status(500).json({ error: 'Something went wrong saving your application. Please try again.' });
     }
-
-    res.json({ success: true });
 });
 
 // ── Admin auth ──

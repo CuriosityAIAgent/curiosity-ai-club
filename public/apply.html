@@ -391,6 +391,7 @@
             transition: all 0.2s;
         }
         .btn-submit:hover { background: var(--accent-hover); transform: translateY(-2px); }
+        .btn-submit:disabled { background: var(--fog-2); cursor: not-allowed; transform: none; }
 
         .submit-note {
             font-family: var(--mono);
@@ -704,6 +705,10 @@
         async function submitApplication() {
             if (!validateForm()) return;
 
+            const btn = document.querySelector('.btn-submit');
+            btn.disabled = true;
+            btn.textContent = 'Submitting...';
+
             const form = document.getElementById('applicationForm');
             const formData = new FormData();
 
@@ -724,6 +729,8 @@
                 for (const file of fileInput.files) {
                     if (file.size > 10 * 1024 * 1024) {
                         alert(`File "${file.name}" is too large (max 10 MB). Please choose a smaller file.`);
+                        btn.disabled = false;
+                        btn.textContent = 'Submit / Express Interest';
                         return;
                     }
                     formData.append('screenshots', file);
@@ -735,6 +742,8 @@
                 const data = await res.json();
                 if (!res.ok) {
                     alert(data.error || 'Something went wrong. Please try again.');
+                    btn.disabled = false;
+                    btn.textContent = 'Submit / Express Interest';
                     return;
                 }
                 if (data.success) {
@@ -745,6 +754,8 @@
                 }
             } catch (err) {
                 alert('Something went wrong. Please try again.');
+                btn.disabled = false;
+                btn.textContent = 'Submit / Express Interest';
             }
         }
 
